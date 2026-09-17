@@ -22,7 +22,7 @@
 
   --bg:#f6f7f9;
   --bg-elev:#ffffff;
-  --glass:rgba(255,255,255,.86);
+  --glass:rgba(255,255,255,.88);
   --surface:#ffffff;
   --surface-2:#f2f4f7;
   --surface-3:#e9edf2;
@@ -61,7 +61,7 @@
 html[data-theme="dark"]{
   --bg:#080b12;
   --bg-elev:#0d1220;
-  --glass:rgba(10,14,24,.86);
+  --glass:rgba(10,14,24,.88);
   --surface:#0f1524;
   --surface-2:#151c2c;
   --surface-3:#1b2334;
@@ -172,16 +172,22 @@ html[data-theme="dark"] mark{background:rgba(245,194,107,.28);color:#ffe9bf}
 .menu-toggle{display:none}
 
 /* ============================================================
-   3. LAYOUT
+   3. LAYOUT + SIDEBAR COLAPSÁVEL
    ============================================================ */
-.layout{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);padding-top:var(--header-h);max-width:1680px;margin:0 auto}
+.layout{
+  display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);padding-top:var(--header-h);
+  max-width:1680px;margin:0 auto;transition:grid-template-columns .24s var(--ease)
+}
 .sidebar{
-  position:sticky;top:var(--header-h);height:calc(100dvh - var(--header-h));overflow-y:auto;overscroll-behavior:contain;
-  border-right:1px solid var(--border);background:var(--bg-elev);padding:1.15rem .8rem 3rem;scrollbar-width:thin
+  position:sticky;top:var(--header-h);height:calc(100dvh - var(--header-h));overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  border-right:1px solid var(--border);background:var(--bg-elev);padding:1rem .8rem 3rem;scrollbar-width:thin
 }
 .sidebar::-webkit-scrollbar{width:9px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:9px;border:3px solid transparent;background-clip:content-box}
-.side-block{margin-bottom:1.5rem}
+.side-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem;padding:0 .55rem .7rem}
+.side-top .side-label{margin:0;padding:0}
+.side-collapse{width:1.9rem;height:1.9rem;padding:0;border-radius:8px}
+.side-block{margin-bottom:1.4rem}
 .side-label{
   font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-soft);
   padding:0 .55rem;margin-bottom:.55rem;display:flex;align-items:center;justify-content:space-between;gap:.4rem
@@ -202,7 +208,7 @@ html[data-theme="dark"] mark{background:rgba(245,194,107,.28);color:#ffe9bf}
 .unit-link:hover{background:var(--surface-2);color:var(--text);text-decoration:none}
 .unit-num{
   font-family:var(--font-mono);font-size:.7rem;font-weight:600;color:var(--text-soft);
-  border:1px solid var(--border);border-radius:5px;padding:.1rem .3rem;line-height:1.35;margin-top:1px
+  border:1px solid var(--border);border-radius:5px;padding:.1rem .3rem;line-height:1.35;margin-top:1px;flex:none
 }
 .unit-name{font-size:.83rem;font-weight:550;line-height:1.4;display:block}
 .unit-item.is-active .unit-link{background:var(--accent-soft);border-color:var(--accent-border);color:var(--accent);font-weight:620}
@@ -216,7 +222,7 @@ html[data-theme="dark"] mark{background:rgba(245,194,107,.28);color:#ffe9bf}
 .unit-check .ico{width:15px;height:15px;stroke-width:2.2}
 .unit-check[aria-pressed="true"]{color:var(--success)}
 .unit-check[aria-pressed="true"] .ico{fill:currentColor;fill-opacity:.18}
-.unit-mini{height:3px;border-radius:9px;background:var(--surface-3);overflow:hidden;margin-top:.35rem}
+.unit-mini{height:3px;border-radius:9px;background:var(--surface-3);overflow:hidden;margin-top:.35rem;display:block}
 .unit-mini>i{display:block;height:100%;background:var(--success);transition:width .4s var(--ease)}
 .side-foot{padding:.75rem .6rem 0;border-top:1px solid var(--border);font-size:.75rem;color:var(--text-soft)}
 .side-foot label{display:flex;gap:.5rem;align-items:flex-start;cursor:pointer;margin-bottom:.6rem;color:var(--text-muted)}
@@ -224,6 +230,44 @@ html[data-theme="dark"] mark{background:rgba(245,194,107,.28);color:#ffe9bf}
 .content{min-width:0;padding:clamp(1.25rem,3vw,2.4rem) clamp(1rem,3.2vw,2.6rem) 5rem;width:100%;max-width:var(--maxw);margin:0 auto}
 .scrim{position:fixed;inset:0;background:rgba(6,10,20,.45);z-index:70;opacity:0;pointer-events:none;transition:opacity .2s}
 body.drawer-open .scrim{opacity:1;pointer-events:auto}
+
+/* --- Sidebar colapsada (rail) --- */
+body.side-collapsed{--sidebar-w:76px}
+body.side-collapsed .sidebar{padding:.8rem .45rem 2rem}
+body.side-collapsed .side-top{justify-content:center;padding:0 0 .7rem}
+body.side-collapsed .side-top .side-label,
+body.side-collapsed .side-course,
+body.side-collapsed .side-foot,
+body.side-collapsed .unit-name,
+body.side-collapsed .unit-mini,
+body.side-collapsed .unit-check,
+body.side-collapsed .side-label{display:none}
+body.side-collapsed .unit-link{justify-content:center;align-items:center;padding:.55rem .3rem;gap:0}
+body.side-collapsed .unit-num{margin:0;font-size:.74rem}
+body.side-collapsed .unit-item.is-active::before{left:-.45rem}
+body.side-collapsed .unit-list{gap:4px}
+@media (min-width:861px){
+  body.side-collapsed .sidebar::-webkit-scrollbar{width:0}
+}
+@media (max-width:860px){
+  body.side-collapsed{--sidebar-w:290px}
+  body.side-collapsed .side-top{justify-content:space-between;padding:0 .55rem .7rem}
+  body.side-collapsed .side-top .side-label,
+  body.side-collapsed .side-course,
+  body.side-collapsed .side-foot,
+  body.side-collapsed .unit-name,
+  body.side-collapsed .unit-mini,
+  body.side-collapsed .unit-check,
+  body.side-collapsed .side-label{display:flex}
+  body.side-collapsed .side-course{display:block}
+  body.side-collapsed .unit-name{display:block}
+  body.side-collapsed .unit-mini{display:block}
+  body.side-collapsed .unit-check{display:grid}
+  body.side-collapsed .unit-link{justify-content:flex-start;align-items:flex-start;padding:.52rem .6rem;gap:.6rem}
+  body.side-collapsed .unit-num{margin-top:1px}
+  body.side-collapsed .sidebar{padding:1rem .8rem 3rem}
+  .side-collapse{display:none}
+}
 
 /* ============================================================
    4. BREADCRUMB / HERO / SECÇÕES
@@ -327,7 +371,7 @@ body.drawer-open .scrim{opacity:1;pointer-events:auto}
 .think .prose{font-size:.93rem}
 .think ol{font-size:.92rem;color:var(--text-muted);margin-bottom:1rem}
 .think-answer{margin-top:.9rem;border-top:1px dashed var(--border-strong);padding-top:.9rem;animation:fadeUp .3s var(--ease)}
-.think-answer h5{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--success);margin:0 0 .5rem}
+.think-answer h5{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--success);margin:0 0 .5rem;display:flex;align-items:center;gap:.35rem}
 .think-answer ol{margin:0;color:var(--text)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
@@ -338,7 +382,7 @@ table.tbl th,table.tbl td{padding:.72rem 1rem;text-align:left;border-bottom:1px 
 table.tbl thead th{background:var(--surface-2);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:700;white-space:nowrap}
 table.tbl tbody tr:last-child td{border-bottom:0}
 table.tbl tbody tr:hover{background:var(--surface-2)}
-table.tbl td:first-child{font-weight:600;color:var(--text)}
+table.tbl td:first-child,table.tbl th[scope="row"]{font-weight:600;color:var(--text)}
 
 .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:.5rem}
 .flow-node{
@@ -349,11 +393,11 @@ table.tbl td:first-child{font-weight:600;color:var(--text)}
   display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:7px;font-size:.72rem;font-weight:700;
   background:var(--tone-soft,var(--accent-soft));color:var(--tone-fg,var(--accent));margin-bottom:.45rem;font-family:var(--font-mono)
 }
-.flow-node h4{font-size:.88rem;margin-bottom:.25rem}
+.flow-node h4{font-size:.88rem;margin-bottom:.25rem;display:flex;align-items:center;gap:.35rem}
 .flow-node p{font-size:.79rem;color:var(--text-muted);margin:0}
 .flow-arrow{display:grid;place-items:center;color:var(--text-soft);align-self:center}
 .flow-arrow .ico{width:1.2rem;height:1.2rem}
-.flow-note{font-size:.8rem;color:var(--text-soft);margin-top:.8rem}
+.flow-note{font-size:.8rem;color:var(--text-soft);margin-top:.8rem;display:flex;gap:.4rem;align-items:flex-start}
 
 .compare{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
 .compare-col{border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)}
@@ -377,7 +421,6 @@ table.tbl td:first-child{font-weight:600;color:var(--text)}
 .terminal-bar i:nth-child(1){background:#f87171}.terminal-bar i:nth-child(2){background:#fbbf24}.terminal-bar i:nth-child(3){background:#34d399}
 .terminal-bar span{margin-left:.4rem;font-size:.74rem;color:#94a3b8;font-family:var(--font-mono)}
 .terminal pre{margin:0;padding:.9rem 1rem;overflow-x:auto;font-size:.8rem;line-height:1.65;color:#d7e0ee}
-.terminal .c{color:#7dd3fc}.terminal .k{color:#a5b4fc}.terminal .cm{color:#64748b}
 
 .checklist{list-style:none;padding:0;margin:0;display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .checklist li{display:flex;gap:.6rem;align-items:flex-start;font-size:.9rem;border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .75rem;background:var(--surface)}
@@ -398,7 +441,6 @@ table.tbl td:first-child{font-weight:600;color:var(--text)}
 .dia-text{font-family:var(--font-sans);font-weight:650;letter-spacing:.02em}
 .dia-sub{font-family:var(--font-sans);font-weight:500}
 
-/* Navegação de unidades */
 .unit-nav{display:grid;gap:.8rem;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
 .unit-nav a{
   display:flex;gap:.6rem;align-items:center;border:1px solid var(--border);border-radius:var(--r-md);padding:.8rem 1rem;
@@ -416,11 +458,15 @@ table.tbl td:first-child{font-weight:600;color:var(--text)}
    ============================================================ */
 .map-grid{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(275px,1fr))}
 .map-card{
-  display:flex;flex-direction:column;gap:.6rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);
-  padding:1.05rem 1.1rem;box-shadow:var(--shadow-1);text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%;
-  transition:transform .18s var(--ease),box-shadow .18s,border-color .18s
+  border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);
+  box-shadow:var(--shadow-1);transition:transform .18s var(--ease),box-shadow .18s,border-color .18s
 }
 .map-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-2);border-color:var(--accent-border)}
+.map-open{
+  all:unset;display:flex;flex-direction:column;gap:.6rem;cursor:pointer;flex:1;box-sizing:border-box;
+  width:100%;padding:1.05rem 1.1rem
+}
+.map-open:focus-visible{outline:2.5px solid var(--accent);outline-offset:3px;border-radius:var(--r-md)}
 .map-card-top{display:flex;align-items:center;gap:.6rem}
 .map-num{
   width:2.2rem;height:2.2rem;flex:none;border-radius:9px;display:grid;place-items:center;font-family:var(--font-mono);
@@ -485,69 +531,92 @@ table.tbl td:first-child{font-weight:600;color:var(--text)}
 .search-foot{display:flex;gap:1rem;justify-content:space-between;padding:.6rem 1.1rem;border-top:1px solid var(--border);background:var(--surface-2);font-size:.72rem;color:var(--text-soft)}
 
 /* ============================================================
-   9. MODO APRESENTAÇÃO
+   9. MODO APRESENTAÇÃO (revisto)
    ============================================================ */
 .pres{position:fixed;inset:0;z-index:200;background:var(--pres-bg);display:none;flex-direction:column}
 body.pres-on .pres{display:flex}
+body.pres-on{overflow:hidden}
+.pres-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#8b5cf6);z-index:222;transition:width .3s var(--ease)}
 .pres-topbar{
-  display:flex;align-items:center;gap:.75rem;padding:.7rem clamp(.9rem,3vw,2rem);border-bottom:1px solid var(--border);
-  font-size:.85rem;color:var(--text-muted);flex:none
+  display:flex;align-items:center;gap:.85rem;padding:.65rem clamp(.9rem,3vw,2rem);border-bottom:1px solid var(--border);
+  font-size:.85rem;color:var(--text-muted);flex:none;background:var(--pres-bg)
 }
-.pres-topbar .pres-kicker{font-weight:700;color:var(--accent);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase}
-.pres-topbar .pres-title{font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pres-stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:clamp(.8rem,2.4vh,1.8rem) clamp(.9rem,4vw,3rem) clamp(3.6rem,9vh,5rem)}
-.slide{flex:1;min-height:0;display:flex;flex-direction:column;animation:slideIn .3s var(--ease)}
-@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.slide.is-out{animation:slideOut .18s var(--ease)}
-@keyframes slideOut{from{opacity:1}to{opacity:0}}
-.slide-frame{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.slide-fit{display:flex}
-.slide-scale{width:100%;transform-origin:top left}
+.pres-topbar .pres-kicker{font-weight:700;color:var(--accent);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.pres-topbar .pres-title{font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pres-topbar .pres-meta{margin-left:auto;display:flex;align-items:center;gap:.75rem;flex:none}
+.pres-timer{font-family:var(--font-mono);font-size:.8rem;color:var(--text-soft);display:inline-flex;align-items:center;gap:.35rem}
+.pres-count-top{font-family:var(--font-mono);font-size:.78rem;color:var(--text-soft)}
+.pres-stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:clamp(.7rem,2.2vh,1.6rem) clamp(.9rem,4vw,3rem) 0}
+.slide{flex:1;min-height:0;display:flex;flex-direction:column}
+.slide.anim-next{animation:slideNext .3s var(--ease)}
+.slide.anim-prev{animation:slidePrev .3s var(--ease)}
+@keyframes slideNext{from{opacity:0;transform:translateX(3.5%)}to{opacity:1;transform:none}}
+@keyframes slidePrev{from{opacity:0;transform:translateX(-3.5%)}to{opacity:1;transform:none}}
+.slide-frame{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}
+.slide-fit{display:block;position:relative}
+.slide-scale{transform-origin:top left}
 .slide-scale>.section{margin:0}
 .slide-scale .sec-head h2{font-size:clamp(1.7rem,3.6vw,2.6rem)}
 .slide-scale .sec-head h2::before{width:6px}
+.slide-scale .sec-lead{font-size:1.12rem}
 .slide-scale .prose,.slide-scale .prose p{font-size:1.22rem;line-height:1.6;max-width:none}
-.slide-scale .card p,.slide-scale .timeline p,.slide-scale .flow-node p,.slide-scale .compare-col ul,.slide-scale .pillar-col ul{font-size:1.02rem}
-.slide-scale .card h3,.slide-scale .timeline h4,.slide-scale .flow-node h4{font-size:1.16rem}
+.slide-scale .card p,.slide-scale .timeline p,.slide-scale .flow-node p,.slide-scale .compare-col ul,.slide-scale .pillar-col ul,.slide-scale .summary-box li,.slide-scale .checklist li{font-size:1.02rem}
+.slide-scale .card h3,.slide-scale .timeline h4,.slide-scale .flow-node h4,.slide-scale .compare-col header h4{font-size:1.14rem}
 .slide-scale .table-wrap{overflow:visible}
 .slide-scale table.tbl{font-size:1.02rem;min-width:0}
 .slide-scale table.tbl th,.slide-scale table.tbl td{padding:.85rem 1rem}
-.slide-scale .callout p,.slide-scale .think .prose,.slide-scale .think ol,.slide-scale .summary-box li,.slide-scale .checklist li{font-size:1.08rem}
+.slide-scale .callout p,.slide-scale .think .prose,.slide-scale .think ol{font-size:1.08rem}
 .slide-scale .pillar-def{font-size:1.2rem}
-.slide-title-hero{text-align:left;display:flex;flex-direction:column;justify-content:center;height:100%;gap:1rem}
-.slide-title-hero .badge{font-size:.95rem;padding:.4rem .9rem}
+.slide-scale .stats .stat b{font-size:2rem}
+.slide-title-hero{display:flex;flex-direction:column;justify-content:center;gap:1.1rem;padding:1rem 0}
+.slide-title-hero .badge{font-size:.95rem;padding:.4rem .9rem;width:max-content}
 .slide-title-hero h1{font-size:clamp(2.2rem,6.4vw,4.4rem);letter-spacing:-.035em;line-height:1.06}
-.slide-title-hero p{font-size:clamp(1.05rem,2.1vw,1.5rem);color:var(--text-muted);max-width:24ch}
-.slide-title-hero .meta-row{gap:.6rem}
+.slide-title-hero p{font-size:clamp(1.05rem,2.1vw,1.5rem);color:var(--text-muted);max-width:26ch;margin:0}
+.slide-title-hero .meta-row{gap:.6rem;margin:0}
 .slide-title-hero .chip{font-size:.95rem;padding:.45rem .85rem}
 .pres-foot{
-  flex:none;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:0 clamp(.9rem,4vw,3rem) .8rem;
-  font-size:.78rem;color:var(--text-soft)
+  flex:none;display:flex;justify-content:space-between;align-items:center;gap:1rem;
+  padding:.55rem clamp(.9rem,4vw,3rem) 4.4rem;font-size:.76rem;color:var(--text-soft)
 }
-.pres-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#8b5cf6);z-index:220;transition:width .3s var(--ease)}
+.pres-foot .hint{display:flex;gap:.9rem;flex-wrap:wrap}
 .pres-controls{
-  position:fixed;left:50%;bottom:1.1rem;transform:translateX(-50%);z-index:230;display:flex;align-items:center;gap:.4rem;
+  position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:245;display:flex;align-items:center;gap:.35rem;
   padding:.45rem;border:1px solid var(--border);border-radius:var(--r-pill);background:var(--glass);
-  backdrop-filter:blur(14px) saturate(160%);box-shadow:var(--shadow-3);transition:opacity .28s var(--ease),transform .28s var(--ease)
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:var(--shadow-3);transition:opacity .28s var(--ease),transform .28s var(--ease);max-width:96vw
 }
 .pres-controls.is-hidden{opacity:0;transform:translateX(-50%) translateY(14px);pointer-events:none}
 .pres-controls .btn{border-radius:var(--r-pill)}
-.pres-count{font-family:var(--font-mono);font-size:.82rem;color:var(--text-muted);padding:0 .55rem;white-space:nowrap;font-weight:600}
-.pres-divider{width:1px;height:22px;background:var(--border);margin:0 .15rem}
+.pres-count{font-family:var(--font-mono);font-size:.82rem;color:var(--text-muted);padding:0 .5rem;white-space:nowrap;font-weight:600}
+.pres-divider{width:1px;height:22px;background:var(--border);margin:0 .1rem;flex:none}
 .pres-index{
-  position:fixed;inset:0;z-index:240;background:var(--glass);backdrop-filter:blur(16px);display:none;
-  padding:clamp(1rem,5vh,3rem) clamp(1rem,5vw,4rem);overflow-y:auto
+  position:fixed;inset:0;z-index:250;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  display:none;padding:clamp(1rem,5vh,3rem) clamp(1rem,5vw,4rem);overflow-y:auto
 }
 .pres-index.is-open{display:block;animation:fadeIn .18s var(--ease)}
 .pres-index h2{font-size:1.4rem;margin-bottom:1rem}
-.pres-index-grid{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.pres-index-grid{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
 .pres-index-item{
   border:1px solid var(--border);background:var(--surface);border-radius:var(--r-sm);padding:.7rem .85rem;text-align:left;
   font:inherit;color:inherit;cursor:pointer;display:flex;gap:.6rem;align-items:center;font-size:.9rem
 }
 .pres-index-item:hover{border-color:var(--accent-border);background:var(--accent-soft)}
 .pres-index-item.is-current{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
-.pres-index-item b{font-family:var(--font-mono);font-size:.75rem;color:var(--text-soft)}
+.pres-index-item b{font-family:var(--font-mono);font-size:.75rem;color:var(--text-soft);flex:none}
+/* Notas do orador */
+.pres-notes{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:4.7rem;z-index:241;width:min(780px,92vw);max-height:34vh;overflow:auto;
+  background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:var(--r-md);padding:.9rem 1.15rem;box-shadow:var(--shadow-3)
+}
+.pres-notes h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);margin-bottom:.5rem;display:flex;gap:.4rem;align-items:center}
+.pres-notes ul{margin:0;padding-left:1.15rem;font-size:.92rem;color:var(--text-muted)}
+.pres-notes li{margin:.32rem 0}
+.pres-notes .empty{font-size:.85rem;color:var(--text-soft);margin:0}
+/* Ecrã preto (blackout) */
+.pres-blackout{position:fixed;inset:0;background:#000;z-index:240;display:none}
+body.pres-black .pres-blackout{display:block}
+body.pres-black .pres-stage,body.pres-black .pres-topbar,body.pres-black .pres-foot,body.pres-black .pres-notes{visibility:hidden}
 
 /* Laser pointer */
 .laser{
@@ -557,7 +626,7 @@ body.pres-on .pres{display:flex}
   box-shadow:0 0 14px 5px rgba(255,50,50,.42)
 }
 body.laser-on .laser{opacity:1}
-body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none}
+body.laser-on.pres-on .slide-frame,body.laser-on.pres-on .pres-stage{cursor:none}
 
 /* Voltar ao topo + toast */
 .to-top{
@@ -569,7 +638,7 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
 .toast{
   position:fixed;left:50%;bottom:1.4rem;transform:translate(-50%,20px);z-index:600;opacity:0;pointer-events:none;
   background:var(--text);color:var(--bg-elev);padding:.6rem 1rem;border-radius:var(--r-pill);font-size:.83rem;font-weight:560;
-  box-shadow:var(--shadow-3);transition:opacity .25s,transform .25s
+  box-shadow:var(--shadow-3);transition:opacity .25s,transform .25s;max-width:92vw;text-align:center
 }
 .toast.is-visible{opacity:1;transform:translate(-50%,0)}
 
@@ -578,6 +647,7 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
    ============================================================ */
 @media (max-width:1180px){
   :root{--sidebar-w:262px}
+  body.side-collapsed{--sidebar-w:72px}
   .pillar-cols{grid-template-columns:1fr 1fr}
 }
 @media (max-width:980px){
@@ -592,7 +662,6 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
     transform:translateX(-105%);transition:transform .25s var(--ease);box-shadow:var(--shadow-3)
   }
   body.drawer-open .sidebar{transform:none}
-  .unit-item.is-active::before{left:-.8rem}
   .card-grid{grid-template-columns:minmax(0,1fr)}
   .pillar-cols{grid-template-columns:1fr}
   .unit-nav{grid-template-columns:1fr;gap:.6rem}
@@ -611,9 +680,10 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
   .btn{padding:.45rem .65rem;font-size:.8rem}
   .hero{padding:1.25rem}
   .stats{grid-template-columns:1fr 1fr}
-  .pres-controls{gap:.2rem;padding:.35rem;bottom:.7rem;max-width:96vw;overflow-x:auto}
+  .pres-controls{gap:.15rem;padding:.32rem;bottom:.6rem;overflow-x:auto}
   .pres-controls .lbl{display:none}
-  .pres-controls .btn{padding:.45rem .55rem}
+  .pres-controls .btn{padding:.45rem .5rem}
+  .pres-foot .hint{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
@@ -625,14 +695,12 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
 @media print{
   :root{--fs-scale:1!important}
   html,body{background:#fff!important;color:#000!important}
-  .topbar,.sidebar,.scrim,.to-top,.toast,.modal,.pres,.laser,.no-print,.unit-actions,.hero-actions,.pres-controls{display:none!important}
+  .topbar,.sidebar,.scrim,.to-top,.toast,.modal,.pres,.laser,.no-print,.unit-actions,.hero-actions,.pres-controls,.pres-notes,.pres-blackout,.side-top{display:none!important}
   .layout{display:block;padding-top:0;max-width:none}
   .content{max-width:none;padding:0}
   .hero{background:#fff;border:1px solid #ccc;box-shadow:none;break-inside:avoid}
   .section,.card,.callout,.think,.table-wrap,.diagram,.pillar,.map-card,.gloss-item{break-inside:avoid;box-shadow:none!important;background:#fff!important}
-  .card:hover,.map-card:hover{transform:none}
   a{color:#000;text-decoration:none}
-  a[href^="#"]::after{content:""}
   .sec-head h2{color:#000}
   .sec-head h2::before{background:#000}
   .terminal{background:#fff;border:1px solid #999}
@@ -670,6 +738,7 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.2a4 4 0 0 1 8 0v3.3"/></symbol>
 <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8.5" cy="15" r="4.5"/><path d="m11.8 11.8 8-8M17.5 6l2 2M15.5 8l2 2"/></symbol>
 <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M4 4l16 16"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-3.2 3.9M6.6 6.7A16.6 16.6 0 0 0 2.5 12S6 18 12 18a9.7 9.7 0 0 0 4-.8"/><path d="M9.9 10a2.8 2.8 0 0 0 4 4"/></symbol>
 <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 4.8-9 4.8-9-4.8L12 3z"/><path d="m3 12.6 9 4.8 9-4.8"/><path d="m3 17.1 9 4.8 9-4.8"/></symbol>
 <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2.5 9.2a14.5 14.5 0 0 1 19 0"/><path d="M5.8 12.7a9.6 9.6 0 0 1 12.4 0"/><path d="M9.1 16.2a4.8 4.8 0 0 1 5.8 0"/><circle cx="12" cy="19.6" r=".9" fill="currentColor" stroke="none"/></symbol>
 <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6.5" rx="1.8"/><rect x="3" y="13.5" width="18" height="6.5" rx="1.8"/><path d="M6.8 7.2h.01M6.8 16.8h.01"/></symbol>
@@ -695,6 +764,8 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
 <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3.5 5.5h17l-6.6 7.6v6.2l-3.8-2v-4.2z"/></symbol>
 <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3.5v17M7 20.5h10M4.5 8h15M4.5 8 2 14h5zM19.5 8 17 14h5z"/></symbol>
 <symbol id="i-grad" viewBox="0 0 24 24"><path d="m12 4 10 4.6L12 13.2 2 8.6z"/><path d="M6.5 10.8v5c0 1.6 2.5 3 5.5 3s5.5-1.4 5.5-3v-5"/></symbol>
+<symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9.5 4v16"/></symbol>
+<symbol id="i-note" viewBox="0 0 24 24"><path d="M5 3.5h14v13l-4 4H5z"/><path d="M15 20.5v-4h4M8.5 9h7M8.5 13h5"/></symbol>
 </defs>
 </svg>
 
@@ -711,8 +782,8 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
     </span>
   </a>
   <div class="topbar-sep" aria-hidden="true"></div>
-  <button class="unit-indicator" data-action="toggle-drawer" aria-label="Ver unidades da disciplina">
-    <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-list"></use></svg>
+  <button class="unit-indicator" data-action="toggle-drawer" aria-label="Ver unidades da disciplina" title="Expandir/recolher navegação">
+    <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-panel"></use></svg>
     <b id="hdrUnitNum">Início</b>
     <span class="long" id="hdrUnitTitle">Página da disciplina</span>
   </button>
@@ -743,6 +814,13 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
 <!-- ============ LAYOUT ============ -->
 <div class="layout">
   <aside class="sidebar" id="sidebar" aria-label="Navegação da disciplina">
+    <div class="side-top">
+      <span class="side-label">Navegação</span>
+      <button class="btn btn-icon btn-ghost side-collapse" data-action="side-toggle" aria-expanded="true" aria-controls="sidebar" aria-label="Recolher barra lateral" title="Recolher barra lateral">
+        <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-left"></use></svg>
+      </button>
+    </div>
+
     <div class="side-block">
       <div class="side-course">
         <span class="side-label" style="padding:0;margin-bottom:.35rem">Disciplina</span>
@@ -763,8 +841,8 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
     <div class="side-block">
       <div class="side-label">Recursos</div>
       <ul class="unit-list">
-        <li class="unit-item" id="navHome"><a class="unit-link" href="#/"><span class="unit-num"><svg class="ico" style="width:12px;height:12px" aria-hidden="true"><use href="#i-home"></use></svg></span><span class="unit-name">Página da disciplina</span></a></li>
-        <li class="unit-item" id="navGloss"><a class="unit-link" href="#/glossario"><span class="unit-num"><svg class="ico" style="width:12px;height:12px" aria-hidden="true"><use href="#i-book"></use></svg></span><span class="unit-name">Glossário</span></a></li>
+        <li class="unit-item" id="navHome"><a class="unit-link" href="#/" title="Página da disciplina"><span class="unit-num"><svg class="ico" style="width:12px;height:12px" aria-hidden="true"><use href="#i-home"></use></svg></span><span class="unit-name">Página da disciplina</span></a></li>
+        <li class="unit-item" id="navGloss"><a class="unit-link" href="#/glossario" title="Glossário"><span class="unit-num"><svg class="ico" style="width:12px;height:12px" aria-hidden="true"><use href="#i-book"></use></svg></span><span class="unit-name">Glossário</span></a></li>
       </ul>
     </div>
 
@@ -778,7 +856,7 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
         <button class="btn btn-sm btn-block no-print" data-action="print"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-printer"></use></svg> Imprimir</button>
       </div>
       <p style="margin:.9rem 0 0;font-size:.7rem;line-height:1.6">
-        Atalhos: <kbd>P</kbd> apresentação · <kbd>←</kbd><kbd>→</kbd> slides · <kbd>L</kbd> laser · <kbd>F</kbd> ecrã inteiro · <kbd>T</kbd> tema · <kbd>Esc</kbd> sair
+        Atalhos: <kbd>P</kbd> apresentação · <kbd>←</kbd><kbd>→</kbd> slides · <kbd>L</kbd> laser · <kbd>N</kbd> notas · <kbd>B</kbd> ecrã preto · <kbd>F</kbd> ecrã inteiro · <kbd>Esc</kbd> sair
       </p>
     </div>
   </aside>
@@ -823,18 +901,32 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
   <div class="pres-topbar">
     <span class="pres-kicker" id="presKicker">Segurança em Redes</span>
     <span class="pres-title" id="presTopTitle">—</span>
+    <span class="pres-meta">
+      <span class="pres-count-top" id="presCountTop">1 / 1</span>
+      <span class="pres-timer" id="presTimer" title="Tempo decorrido nesta apresentação"><svg class="ico" aria-hidden="true" focusable="false" style="width:1em;height:1em"><use href="#i-clock"></use></svg><span id="presTimerTxt">00:00</span></span>
+    </span>
   </div>
   <div class="pres-stage">
     <article class="slide" id="slideEl" aria-live="polite">
-      <div class="slide-frame" id="slideFrame">
+      <div class="slide-frame" id="slideFrame" title="Clique para avançar">
         <div class="slide-fit" id="slideFit"><div class="slide-scale" id="slideScale"></div></div>
       </div>
     </article>
   </div>
   <div class="pres-foot">
     <span id="presFootLeft">Segurança em Redes · Ciências de Computação</span>
+    <span class="hint" aria-hidden="true">
+      <span>Clique: avançar</span><span><kbd>←</kbd><kbd>→</kbd> navegar</span><span><kbd>N</kbd> notas</span><span><kbd>B</kbd> ecrã preto</span><span><kbd>L</kbd> laser</span>
+    </span>
     <span id="presFootRight"></span>
   </div>
+
+  <aside class="pres-notes" id="presNotes" hidden aria-label="Notas do orador">
+    <h3><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-note"></use></svg> Notas do orador</h3>
+    <div id="presNotesBody"></div>
+  </aside>
+
+  <div class="pres-blackout" id="presBlackout" aria-hidden="true"></div>
 
   <div class="pres-controls" id="presControls">
     <button class="btn btn-sm" data-action="pres-prev" aria-label="Slide anterior (seta esquerda)"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-left"></use></svg><span class="lbl">Anterior</span></button>
@@ -845,7 +937,9 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
     <button class="btn btn-sm btn-icon" data-action="pres-font-inc" aria-label="Aumentar fonte do slide" title="Aumentar fonte (+)"><span style="font-size:.95rem;font-weight:700">A+</span></button>
     <span class="pres-divider" aria-hidden="true"></span>
     <button class="btn btn-sm btn-icon" data-action="laser" aria-pressed="false" aria-label="Ponteiro laser (L)" title="Laser (L)"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-target"></use></svg></button>
-    <button class="btn btn-sm btn-icon" data-action="pres-index" aria-label="Índice de slides (G)" title="Índice (G)"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-list"></use></svg></button>
+    <button class="btn btn-sm btn-icon" data-action="pres-notes" aria-pressed="false" aria-label="Notas do orador (N)" title="Notas do orador (N)"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-note"></use></svg></button>
+    <button class="btn btn-sm btn-icon" data-action="pres-black" aria-pressed="false" aria-label="Ecrã preto (B)" title="Ecrã preto (B)"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-eye-off"></use></svg></button>
+    <button class="btn btn-sm btn-icon" data-action="pres-index" aria-label="Índice de slides (G)" title="Índice de slides (G)"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-list"></use></svg></button>
     <button class="btn btn-sm btn-icon" data-action="fullscreen" aria-label="Ecrã inteiro (F)" title="Ecrã inteiro (F)"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-expand"></use></svg></button>
     <button class="btn btn-sm" data-action="pres-exit" aria-label="Sair do modo apresentação (Esc)" title="Sair (Esc)"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-close"></use></svg><span class="lbl">Sair</span></button>
   </div>
@@ -863,8 +957,7 @@ body.laser-on.pres-on .pres-stage,body.laser-on.pres-on .slide-frame{cursor:none
 <script>
 "use strict";
 /* ============================================================================
-   SEGURANÇA EM REDES — aplicação de estudo + apresentação (JS puro, ES6+)
-   Arquitetura: courseData (dados) → renderers (vistas) → controllers (eventos)
+   SEGURANÇA EM REDES — estudo + apresentação (JS puro, ES6+)
    ============================================================================ */
 
 /* ---------------------------------------------------------------------------
@@ -894,8 +987,10 @@ const courseData = {
     {k:"Home / End",d:"Primeiro / último slide"},
     {k:"F",d:"Ecrã inteiro"},
     {k:"L",d:"Ponteiro laser"},
-    {k:"+ / −",d:"Aumentar / diminuir fonte"},
+    {k:"N",d:"Notas do orador (apresentação)"},
+    {k:"B",d:"Ecrã preto / voltar (apresentação)"},
     {k:"G",d:"Índice de slides (apresentação)"},
+    {k:"+ / −",d:"Aumentar / diminuir fonte"},
     {k:"Ctrl + K",d:"Pesquisa global"},
     {k:"T",d:"Alternar tema claro / escuro"},
     {k:"Esc",d:"Sair da apresentação ou fechar diálogo"}
@@ -982,7 +1077,7 @@ const courseData = {
 
       {id:"risk",type:"table",slide:"Risco",kicker:"Análise",title:"Risco: avaliar e decidir",
        lead:"O risco é normalmente expresso como a combinação da probabilidade de ocorrência com a severidade do impacto.",
-       columns:["Probabilidade \\ Impacto","Baixo","Médio","Alvo / Crítico"],
+       columns:["Probabilidade \\ Impacto","Baixo","Médio","Alto / Crítico"],
        caption:"Matriz qualitativa de risco (escala 3×3) — usada para priorizar controlos",
        rows:[
          ["Quase certa","Médio","Alto","Crítico"],
@@ -1067,7 +1162,7 @@ const courseData = {
          {icon:"users",tone:"accent",title:"Cibercriminoso",text:"Motivação financeira: ransomware, roubo de credenciais, fraude, venda de dados."},
          {icon:"globe",tone:"danger",title:"Estado-nação / APT",text:"Grupos persistentes e avançados com objetivos de espionagem, geopolítica ou sabotagem."},
          {icon:"zap",tone:"warning",title:"Hacktivista",text:"Motivação ideológica; tipicamente desfiguração de sítios e ataques DDoS."},
-         {icon:"user",tone:"info",title:"Ameaça interna",text:"Colaborador ou prestador com acesso legítimo; intencional ou por negligência."},
+         {icon:"alert",tone:"info",title:"Ameaça interna",text:"Colaborador ou prestador com acesso legítimo; intencional ou por negligência."},
          {icon:"bug",tone:"neutral",title:"Script kiddie",text:"Baixa competência técnica, usa ferramentas prontas; ainda assim causa incidentes reais."},
          {icon:"refresh",tone:"success",title:"Causas acidentais",text:"Erros de configuração, exposição de serviços na Internet, perda de dispositivos."}]},
       {id:"classes",type:"table",slide:"Classes de ataques",kicker:"Taxonomia",title:"Classes de ataques em rede",
@@ -1107,7 +1202,7 @@ const courseData = {
        answer:{title:"Resposta sugerida",items:[
          "Disponibilidade (servidores inacessíveis) e confidencialidade (se houve exfiltração prévia dos dados); a integridade é afetada pela cifragem não autorizada.",
          "Ameaça: grupo de ransomware. Vulnerabilidade: utilizador sem formação, execução de anexos, ausência de MFA no correio, backups na mesma rede e sem imutabilidade. Exploração: phishing com anexo malicioso e movimento lateral via SMB. Impacto: paragem do laboratório e perda de dados.",
-         "Cópias de segurança offline/imutáveis e testadas, segmentação da rede e restrição de SMB, MFA no correio eletrónico, políticas de restrição de execução (AppLocker/ASR), patches atualizados.",
+         "Cópias de segurança offline/imutáveis e testadas, segmentação da rede e restrição de SMB, MFA no correio eletrónico, políticas de restrição de execução, patches atualizados.",
          "Deteção por EDR/HIDS nos endpoints, alertas de alterações massivas de ficheiros, monitorização de tráfego anómalo de saída e correlação num SIEM."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["As ameaças classificam-se pela origem, motivação e vetor; conhecê-las permite priorizar controlos.",
@@ -1150,7 +1245,7 @@ const courseData = {
        steps:[
          {t:"MENSAGEM",d:"Documento ou dados a assinar.",tone:"neutral",icon:"book"},
          {t:"HASH",d:"Cálculo do resumo (ex.: SHA-256).",tone:"info",icon:"database"},
-         {t:"CIFRAR COM CHAVE PRIVADA",d:"O emissor assina o resumo.",tone:"accent",icon:"key"},
+         {t:"CHAVE PRIVADA",d:"O emissor assina o resumo com a sua chave privada.",tone:"accent",icon:"key"},
          {t:"TRANSMISSÃO",d:"Mensagem + assinatura seguem pelo canal.",tone:"warning",icon:"network"},
          {t:"VALIDAÇÃO",d:"Recetor recalcula o hash e verifica com a chave pública do emissor.",tone:"success",icon:"check"}],
        note:"Se o hash recalculado corresponder ao hash decifrado da assinatura, a mensagem é autêntica e não foi alterada."},
@@ -1178,9 +1273,9 @@ const courseData = {
        prompt:"Um utilizador acede ao portal da universidade e o navegador apresenta um aviso de certificado inválido. O administrador confirma que o certificado expirou ontem.",
        items:["Que propriedade de segurança fica comprometida se o utilizador ignorar o aviso?","Que ataque se torna viável nesse contexto?","Que práticas de gestão evitariam a situação?"],
        answer:{title:"Resposta sugerida",items:[
-         "A autenticidade do servidor: o utilizador deixa de poder confirmar que está a falar com o portal legítimo (a confidencialidade só é garantida em relação ao detentor da chave privada correspondente ao certificado apresentado).",
+         "A autenticidade do servidor: o utilizador deixa de poder confirmar que está a falar com o portal legítimo.",
          "Man-in-the-middle: um atacante pode apresentar o seu próprio certificado e intercetar/alterar o tráfego, obtendo credenciais.",
-         "Inventário e monitorização de validade dos certificados, renovação automática (ex.: ACME/Let's Encrypt), alertas com antecedência, uso de HSTS para evitar downgrade para HTTP e procedimentos de revogação."]}},
+         "Inventário e monitorização de validade dos certificados, renovação automática (ex.: ACME), alertas com antecedência, uso de HSTS para evitar downgrade para HTTP e procedimentos de revogação."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["Criptografia simétrica para volume, assimétrica para troca de chaves, autenticação e assinatura.",
               "Hash garante integridade; HMAC e assinaturas acrescentam autenticidade e não-repúdio.",
@@ -1236,9 +1331,9 @@ const courseData = {
        prompt:"A universidade quer permitir que docentes acedam às pautas de notas a partir de casa, e que os serviços académicos possam alterar notas. Os estudantes apenas consultam as suas próprias notas.",
        items:["Que modelo de controlo de acesso aplicaria e porquê?","Que fatores de autenticação exigiria para docentes e para serviços académicos?","Que princípio garante que um docente não vê pautas de outras unidades curriculares?"],
        answer:{title:"Resposta sugerida",items:[
-         "RBAC como base (papéis: estudante, docente, serviços académicos, administrador), eventualmente complementado por ABAC para regras contextuais (ex.: acesso remoto exige dispositivo gerido e rede conhecida).",
-         "MFA obrigatório para todos os papéis com acesso a dados pessoais; chave FIDO2/WebAuthn ou TOTP para docentes e serviços académicos; SSO federado (SAML/OIDC) para simplificar a experiência.",
-         "Menor privilégio combinado com necessidade de conhecer (need-to-know): as permissões são definidas ao nível da unidade curricular/turma em que o docente leciona, e não globalmente."]}},
+         "RBAC como base (papéis: estudante, docente, serviços académicos, administrador), eventualmente complementado por ABAC para regras contextuais.",
+         "MFA obrigatório para todos os papéis com acesso a dados pessoais; chave FIDO2/WebAuthn ou TOTP para docentes e serviços académicos; SSO federado (SAML/OIDC).",
+         "Menor privilégio combinado com necessidade de conhecer (need-to-know): as permissões são definidas ao nível da unidade curricular/turma em que o docente leciona."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["AAA separa identidade, permissões e registo de atividade.",
               "MFA exige fatores independentes; palavras-passe continuam a ser o elo mais fraco.",
@@ -1270,7 +1365,7 @@ const courseData = {
          ["WAF","7","Regras específicas para HTTP/HTTPS (OWASP Core Rule Set)","Falsos positivos; não substitui código seguro"],
          ["Firewall de host","3 a 7","Filtragem local no sistema (nftables, Windows Firewall)","Gestão distribuída por muitos equipamentos"]]},
       {id:"rules",type:"terminal",slide:"Regras na prática",kicker:"Exemplo",title:"Lógica de filtragem: o 5-tuple",
-       caption:"Exemplo ilustrativo de política para um servidor web em DMZ (sintaxe nftables/iptables simplificada)",
+       caption:"Exemplo ilustrativo de política para um servidor web em DMZ (sintaxe nftables simplificada)",
        lines:[
          "# Política de entrada: negar tudo o que não estiver explícito",
          "chain input  { policy drop; }",
@@ -1303,7 +1398,7 @@ const courseData = {
        items:["Em que zona colocaria o servidor web e a base de dados?","Que regras de filtragem escreveria entre as zonas?","Que controlos adicionais aplicaria além da firewall?"],
        answer:{title:"Resposta sugerida",items:[
          "Servidor web na DMZ; base de dados na rede interna (zona de dados), nunca exposta à Internet.",
-         "Permitir apenas 443/TCP de qualquer origem para o servidor web; permitir apenas da DMZ para a porta da base de dados (ex.: 5432/TCP) a partir do IP do servidor web; negar todo o tráfego iniciado pela DMZ para o resto da LAN; permitir saída da DMZ apenas para serviços estritamente necessários (ex.: atualizações, DNS).",
+         "Permitir apenas 443/TCP de qualquer origem para o servidor web; permitir apenas da DMZ para a porta da base de dados a partir do IP do servidor web; negar todo o tráfego iniciado pela DMZ para o resto da LAN.",
          "TLS com certificado válido e HSTS, WAF, autenticação forte e MFA na administração, base de dados com credenciais distintas e menor privilégio, cifragem em repouso, registo de auditoria, monitorização/IPS, backups e testes de vulnerabilidades."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["Firewall aplica uma política de filtragem entre zonas com níveis de confiança diferentes.",
@@ -1328,10 +1423,10 @@ const courseData = {
        columns:[
          {title:"IDS (deteção)",tone:"info",icon:"eye",items:[
            "Modo passivo, fora do caminho do tráfego (porta SPAN/TAP)","Analisa cópias dos pacotes e gera alertas",
-           "Não bloqueia: não introduz latência nem ponto único de falha","Se for comprometido ou ignorado, o ataque continua"]},
+           "Não bloqueia: não introduz latência nem ponto único de falha","Se for ignorado, o ataque continua"]},
          {title:"IPS (prevenção)",tone:"danger",icon:"shield",items:[
            "Modo inline: o tráfego atravessa o sensor","Pode descartar pacotes, repôr ligações (RST) ou bloquear origens",
-           "Falsos positivos podem interromper serviços legítimos","É um ponto de falha: se parar, o tráfego para ou passa sem inspeção (fail-open/fail-close)"]}
+           "Falsos positivos podem interromper serviços legítimos","É um ponto de falha: se parar, o tráfego para ou passa sem inspeção"]}
        ]},
       {id:"placement",type:"table",slide:"Tipos e colocação",kicker:"Arquitetura",title:"Tipos de sensores e onde os colocar",
        columns:["Tipo","Onde monitoriza","Vantagens","Desvantagens"],
@@ -1356,7 +1451,7 @@ const courseData = {
          "    detection_filter:track by_src, count 5, seconds 60; \\",
          "    classtype:attempted-admin; sid:1000001; rev:1; )",
          "",
-         "# Zeek/Bro: análise de protocolo e geração de logs estruturados",
+         "# Zeek: análise de protocolo e logs estruturados",
          "# (conn.log, http.log, dns.log, ssl.log) para caça a ameaças"
        ]},
       {id:"siem",type:"flow",slide:"Do alerta à ação",kicker:"Operação",title:"Do sensor ao SOC",
@@ -1374,9 +1469,9 @@ const courseData = {
        prompt:"O NIDS regista milhares de tentativas de ligação à porta 445/TCP provenientes de um único endereço externo, todas recusadas pela firewall. Duas horas depois, um host interno inicia ligações de saída para o mesmo endereço externo em portas não usuais.",
        items:["Que eventos estão a ocorrer em cada fase?","Qual deles exige resposta imediata e porquê?","Que informação adicional recolheria antes de atuar?"],
        answer:{title:"Resposta sugerida",items:[
-         "Primeira fase: varrimento/reconhecimento externo de SMB (445) bloqueado pela política — ruído típico da Internet. Segunda fase: possível comunicação de comando e controlo ou exfiltração a partir de um host interno, o que sugere compromisso efetivo.",
+         "Primeira fase: varrimento/reconhecimento externo de SMB (445) bloqueado pela política — ruído típico da Internet. Segunda fase: possível comunicação de comando e controlo ou exfiltração a partir de um host interno.",
          "A segunda exige resposta imediata: tráfego de saída anómalo para um endereço associado a atividade maliciosa é indicador de host comprometido, com risco de movimento lateral e perda de dados.",
-         "Logs do endpoint (processos, serviços, tarefas agendadas), histórico DNS, NetFlow do host, resultados do antivírus/EDR, utilizador e função da máquina, e reputação do endereço externo; depois, isolar o host da rede preservando evidência."]}},
+         "Logs do endpoint (processos, serviços, tarefas agendadas), histórico DNS, NetFlow do host, resultados do antivírus/EDR, utilizador e função da máquina, e reputação do endereço externo; depois, isolar o host preservando evidência."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["IDS deteta e alerta; IPS atua inline e pode bloquear automaticamente.",
               "Assinaturas são precisas mas reativas; anomalias detetam novidades com mais falsos positivos.",
@@ -1403,7 +1498,7 @@ const courseData = {
          {icon:"eye",tone:"info",title:"Sniffing",text:"Captura passiva de tramas; sem cifragem adequada, todo o tráfego é legível."},
          {icon:"zap",tone:"accent",title:"Deauth / disassociation",text:"Injeção de tramas de gestão para desligar clientes e forçar nova associação ou captura do handshake."},
          {icon:"key",tone:"neutral",title:"Ataques offline à chave",text:"Captura do handshake de 4 vias e tentativa de dicionário/força bruta sobre a PSK."},
-         {icon:"bug",tone:"success",title:"KRACK e fragilidades de implementação",text:"Falhas no handshake do WPA2 que permitiam manipulação de pacotes; corrigidas por atualização de clientes e APs."}]},
+         {icon:"bug",tone:"success",title:"Falhas de implementação",text:"Ex.: KRACK no handshake do WPA2; corrigida por atualização de clientes e pontos de acesso."}]},
       {id:"evolution",type:"table",slide:"WEP → WPA3",kicker:"Evolução",title:"Evolução dos protocolos de segurança 802.11",
        columns:["Protocolo","Cifragem / integridade","Estado atual","Observações"],
        caption:"Do WEP (1997) ao WPA3 (2018)",
@@ -1411,7 +1506,7 @@ const courseData = {
          ["WEP","RC4 com vetor de inicialização de 24 bits + CRC-32","Obsoleto, totalmente quebrado","Chaves recuperáveis em minutos com tráfego suficiente; não usar em caso algum"],
          ["WPA (TKIP)","RC4 com TKIP e MIC (Michael)","Obsoleto","Solução transitória para hardware WEP; TKIP foi descontinuado no 802.11-2012"],
          ["WPA2 (CCMP)","AES-128 em modo CCM (802.11i)","Recomendado (mínimo)","PSK para uso doméstico; 802.1X/EAP para empresas; handshake de 4 vias"],
-         ["WPA3-Personal (SAE)","Dragonfly key exchange, AES-128/256","Recomendado","Substitui o handshake PSK por um acordo autenticado resistente a dicionário offline; forward secrecy"],
+         ["WPA3-Personal (SAE)","Dragonfly key exchange, AES-128/256","Recomendado","Substitui o handshake PSK por acordo autenticado resistente a dicionário offline; forward secrecy"],
          ["WPA3-Enterprise","802.1X/EAP-TLS, modo 192 bits opcional","Recomendado para organizações","Autenticação individual por utilizador com certificados"]]},
       {id:"eap",type:"flow",slide:"802.1X / EAP",kicker:"Enterprise",title:"Autenticação 802.1X em rede sem fios empresarial",
        steps:[
@@ -1429,7 +1524,7 @@ const courseData = {
          "Desativar WPS (PIN vulnerável a força bruta) e administração por HTTP.",
          "SSID oculto não é segurança: apenas dificulta a associação legítima.",
          "Atualizar firmware dos APs e monitorizar o espetro à procura de rogue APs.",
-         "Desativar protocolos de gestão remota desnecessários e alterar credenciais de fábrica.",
+         "Alterar credenciais de fábrica e desativar gestão remota desnecessária.",
          "Segmentar por VLAN dispositivos IoT e de visitantes.",
          "Registar e monitorizar associações, falhas de autenticação e tráfego de gestão."]},
       {id:"callout",type:"callout",tone:"warning",icon:"alert",slide:"Atenção",title:"ATENÇÃO",
@@ -1439,9 +1534,9 @@ const courseData = {
        prompt:"A universidade quer disponibilizar Wi-Fi a visitantes no átrio, sem permitir acesso à rede administrativa nem aos servidores internos. Existem 20 pontos de acesso e espera-se grande rotatividade de dispositivos.",
        items:["Que método de segurança aplicaria e porquê?","Como garantiria o isolamento face à rede interna?","Que medidas adicionais de monitorização implementaria?"],
        answer:{title:"Resposta sugerida",items:[
-         "WPA3-Personal com PSK rotativa ou, mais simples para visitantes, portal cativo com TLS e uma PSK temporária/diária; para staff, 802.1X/EAP-TLS. Nunca WEP nem WPA2 com PSK pública permanente.",
-         "VLAN dedicada a convidados, sem rota para as VLANs internas, firewall com política default-deny entre a VLAN de convidados e a LAN, isolamento de clientes (client isolation) no AP e filtragem de saída apenas para Internet.",
-         "Monitorização do espetro para detetar rogue APs e evil twins, logs de associação e de autenticação, rate limiting e proteção contra deauth flooding, alertas para volumes anómalos de tráfego e inventário de dispositivos."]}},
+         "WPA3-Personal com PSK rotativa ou portal cativo com TLS e PSK temporária; para staff, 802.1X/EAP-TLS. Nunca WEP nem WPA2 com PSK pública permanente.",
+         "VLAN dedicada a convidados, sem rota para as VLANs internas, firewall default-deny entre VLANs, isolamento de clientes (client isolation) no AP e filtragem de saída apenas para Internet.",
+         "Monitorização do espetro para detetar rogue APs e evil twins, logs de associação e de autenticação, rate limiting, proteção contra deauth flooding e alertas de volumes anómalos."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["O meio rádio é partilhado: confidencialidade e autenticação têm de ser garantidas por protocolo.",
               "WEP e WPA/TKIP estão obsoletos; WPA2-AES é o mínimo e WPA3 é o recomendado.",
@@ -1469,7 +1564,7 @@ const courseData = {
          ["IPsec (ESP/AH + IKEv2)","Camada 3","Padrão aberto; modos transporte e túnel; SA negociadas por IKE","Muito flexível e, por isso, sujeito a más configurações; preferir IKEv2 com EAP ou certificados"],
          ["SSL/TLS VPN","Camada 4/7 sobre TCP","Acesso via navegador ou cliente; atravessa NAT e firewalls facilmente","Exige MFA; vulnerável se o portal tiver falhas web"],
          ["OpenVPN","TLS sobre UDP/TCP","Baseado em OpenSSL; configurável; amplamente auditado","Desempenho moderado; exige gestão cuidada de certificados"],
-         ["WireGuard","UDP, criptografia moderna","Código reduzido (~4 mil linhas), Curve25519, ChaCha20-Poly1305","Modelo simples: cada par tem uma chave pública; endereços IP atribuídos pelo servidor"],
+         ["WireGuard","UDP, criptografia moderna","Código reduzido, Curve25519, ChaCha20-Poly1305","Modelo simples: cada par tem uma chave pública; endereços atribuídos pelo servidor"],
          ["L2TP/IPsec","Camada 2 encapsulada em IPsec","Frequentemente usado em clientes nativos","L2TP não cifra por si só: depende do IPsec"],
          ["SSTP","TLS sobre TCP","Integração Windows; atravessa a maioria das firewalls","Menos interoperável fora do ecossistema Microsoft"]]},
       {id:"flow",type:"flow",slide:"Como funciona",kicker:"Fluxo",title:"Percurso de um pacote numa VPN de acesso remoto",
@@ -1505,9 +1600,9 @@ const courseData = {
        prompt:"Cinquenta funcionários passam a trabalhar a partir de casa e precisam de aceder a uma aplicação de gestão de processos e a uma partilha de ficheiros interna. A direção pretende uma solução simples de operar.",
        items:["Que tipo de VPN escolheria e com que autenticação?","Que riscos introduz o dispositivo doméstico do utilizador?","Que alternativa baseada em confiança zero poderia propor?"],
        answer:{title:"Resposta sugerida",items:[
-         "VPN de acesso remoto (SSL/TLS VPN ou WireGuard/OpenVPN) com certificados de cliente e MFA; IKEv2/IPsec com EAP-MSCHAPv2 + MFA é também válido em ambientes Windows. Split tunneling apenas com avaliação de risco.",
-         "O dispositivo doméstico pode estar comprometido, partilhado com terceiros, sem patches ou sem antivírus; uma vez dentro do túnel, pode servir de ponte para a rede interna. Mitigar com verificação de conformidade (posture check), EDR obrigatório, menor privilégio e segmentação do que é acessível após o túnel.",
-         "ZTNA: publicar apenas as duas aplicações através de um broker de acesso, com autenticação forte, verificação do estado do dispositivo e registo por sessão — sem expor a rede interna nem necessitar de cliente VPN completo."]}},
+         "VPN de acesso remoto (SSL/TLS VPN ou WireGuard/OpenVPN) com certificados de cliente e MFA; IKEv2/IPsec com EAP + MFA é também válido em ambientes Windows.",
+         "O dispositivo doméstico pode estar comprometido, partilhado, sem patches ou sem antivírus; uma vez dentro do túnel, pode servir de ponte para a rede interna. Mitigar com verificação de conformidade, EDR obrigatório, menor privilégio e segmentação.",
+         "ZTNA: publicar apenas as duas aplicações através de um broker de acesso, com autenticação forte, verificação do estado do dispositivo e registo por sessão — sem expor a rede interna."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["VPN = túnel cifrado e autenticado sobre rede não confiável.",
               "IPsec opera na camada 3 (site-to-site); SSL/TLS VPN e WireGuard são comuns em acesso remoto.",
@@ -1531,19 +1626,19 @@ const courseData = {
        columns:["Protocolo","Vulnerabilidade típica","Proteção recomendada"],
        caption:"Mapa de segurança por protocolo",
        rows:[
-         ["ARP (camada 2)","ARP spoofing/poisoning — respostas falsas associam o IP do gateway ao MAC do atacante","Entradas ARP estáticas em hosts críticos, Dynamic ARP Inspection (DAI) em switches geridos, DHCP snooping"],
-         ["Ethernet / VLAN","Salto entre VLANs, trunk mal configurado, MAC flooding","Desativar DTP em portas de acesso, VLAN nativa dedicada, port security, private VLAN"],
+         ["ARP (camada 2)","ARP spoofing/poisoning — respostas falsas associam o IP do gateway ao MAC do atacante","Entradas ARP estáticas em hosts críticos, Dynamic ARP Inspection (DAI), DHCP snooping"],
+         ["Ethernet / VLAN","Salto entre VLANs, trunk mal configurado, MAC flooding","Desativar DTP em portas de acesso, VLAN nativa dedicada, port security"],
          ["IP","Spoofing de endereço de origem","Filtragem de ingresso/egress (BCP 38), uRPF, IPsec quando apropriado"],
-         ["ICMP","Reconhecimento, Smurf, ICMP flood","Permitir apenas tipos necessários (ex.: Path MTU), limitar taxa, bloquear em fronteiras"],
-         ["TCP","SYN flood, session hijacking, RST injection","SYN cookies e rate limiting, sequências aleatórias, TLS para proteger a sessão aplicacional"],
-         ["UDP","Amplificação/reflexão (DNS, NTP, SSDP, memcached)","Filtrar respostas de serviços refletores, limitar tamanho de resposta, desativar recursão aberta"],
-         ["DNS","Cache poisoning, spoofing de resposta, exfiltração por túnel DNS","DNSSEC, resoluvalidação, DoT/DoH, monitorização de consultas anómalas, DNS sinkhole"],
+         ["ICMP","Reconhecimento, Smurf, ICMP flood","Permitir apenas tipos necessários, limitar taxa, bloquear em fronteiras"],
+         ["TCP","SYN flood, session hijacking, RST injection","SYN cookies e rate limiting, sequências aleatórias, TLS na camada aplicacional"],
+         ["UDP","Amplificação/reflexão (DNS, NTP, SSDP, memcached)","Filtrar respostas de refletores, limitar tamanho de resposta, desativar recursão aberta"],
+         ["DNS","Cache poisoning, spoofing de resposta, túnel DNS","DNSSEC, validação, DoT/DoH, monitorização de consultas anómalas, DNS sinkhole"],
          ["HTTP","Interceção e modificação, session hijacking, downgrade","HTTPS (TLS 1.2/1.3), HSTS, cookies Secure/HttpOnly/SameSite, cabeçalhos de segurança"],
          ["SMTP","Falsificação de remetente, interceção","SPF, DKIM, DMARC, STARTTLS, MTA-STS"],
-         ["SSH","Man-in-the-middle no primeiro contacto, palavras-passe fracas","Chaves em vez de palavras-passe, verificação de host keys, desativar root login e protocolos antigos"],
+         ["SSH","Man-in-the-middle no primeiro contacto, palavras-passe fracas","Chaves em vez de palavras-passe, verificação de host keys, desativar root login"],
          ["SNMP","Community strings em claro (v1/v2c), fuga de informação","SNMPv3 com autenticação e cifragem, ACL de gestão"],
-         ["DHCP","Rogue DHCP server, esgotamento de endereços","DHCP snooping, ports de confiança, reservas e inspeção de ofertas"],
-         ["NTP","Amplificação (monlist), desvios de relógio usados em ataques","Restringir comandos de monitorização, autenticar servidores, usar fontes internas"],
+         ["DHCP","Rogue DHCP server, esgotamento de endereços","DHCP snooping, portas de confiança, inspeção de ofertas"],
+         ["NTP","Amplificação (monlist), desvios de relógio","Restringir comandos de monitorização, autenticar servidores, fontes internas"],
          ["BGP","Hijacking de prefixos, fugas de rota","RPKI/ROA, filtragem de prefixos por cliente, monitorização de anúncios"]]},
       {id:"ddos",type:"flow",slide:"DDoS por amplificação",kicker:"Ataque",title:"Como funciona um DDoS de amplificação",
        steps:[
@@ -1560,16 +1655,16 @@ const courseData = {
          {icon:"shield",tone:"success",title:"SPF, DKIM e DMARC",text:"SPF autoriza servidores de envio; DKIM assina as mensagens; DMARC define a política quando ambas falham e pede relatórios."},
          {icon:"zap",tone:"warning",title:"HSTS",text:"Cabeçalho Strict-Transport-Security obriga o navegador a usar apenas HTTPS para o domínio, impedindo downgrade e sslstrip."}]},
       {id:"callout",type:"callout",tone:"warning",icon:"alert",slide:"Atenção",title:"ATENÇÃO",
-       html:`<p><strong>NAT não é uma firewall</strong> e <strong>HTTPS não autentica o utilizador</strong>: apenas autentica o servidor (a menos que se useem certificados de cliente).</p>
+       html:`<p><strong>NAT não é uma firewall</strong> e <strong>HTTPS não autentica o utilizador</strong>: apenas autentica o servidor (a menos que se usem certificados de cliente).</p>
        <p><strong>Um cabeçalho X-Forwarded-For pode ser forjado</strong> se o servidor aceitar ligações diretas; só é confiável quando proveniente de um proxy controlado.</p>
        <p>Registar endereços IP internos em logs de serviços públicos expõe a topologia da rede.</p>`},
       {id:"think",type:"think",slide:"Pense",kicker:"Desafio",title:"Pense: utilizadores redirecionados",
        prompt:"Vários utilizadores da rede administrativa queixam-se de que, ao acederem ao portal interno, aparecem páginas de publicidade. Os endereços IP dos seus computadores parecem corretos e o servidor está operacional.",
        items:["Qual é o ataque mais provável ao nível da camada 2?","Como confirmaria a hipótese?","Que medidas de prevenção aplicaria nos switches?"],
        answer:{title:"Resposta sugerida",items:[
-         "ARP spoofing: uma máquina na mesma sub-rede responde às requisições ARP pelo IP do gateway com o seu próprio MAC, tornando-se intermediária (man-in-the-middle) e injetando conteúdo nas páginas não cifradas.",
-         "Comparar a tabela ARP dos hosts afetados com o MAC real do gateway; verificar se o mesmo MAC aparece associado a vários IP; capturar tráfego e procurar respostas ARP gratuitas (gratuitous ARP) não solicitadas; identificar a porta do switch onde está o MAC suspeito.",
-         "Dynamic ARP Inspection com DHCP snooping, port security limitando MAC por porta, VLAN de gestão separada, segmentação da rede administrativa, HTTPS/HSTS em todos os serviços internos e monitorização de alterações de tabelas ARP."]}},
+         "ARP spoofing: uma máquina na mesma sub-rede responde às requisições ARP pelo IP do gateway com o seu próprio MAC, tornando-se intermediária (man-in-the-middle).",
+         "Comparar a tabela ARP dos hosts afetados com o MAC real do gateway; verificar se o mesmo MAC aparece associado a vários IP; capturar tráfego e procurar respostas ARP não solicitadas; identificar a porta do switch com o MAC suspeito.",
+         "Dynamic ARP Inspection com DHCP snooping, port security limitando MAC por porta, VLAN de gestão separada, segmentação da rede administrativa, HTTPS/HSTS interno e monitorização de alterações ARP."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["A segurança tem de ser analisada camada a camada: cada protocolo tem fraquezas próprias.",
               "ARP, IP e DHCP não autenticam; a mitigação passa por inspeção nos switches e filtragem de origem.",
@@ -1600,9 +1695,9 @@ const courseData = {
          {icon:"bug",tone:"danger",title:"Threat intelligence",text:"Listas de indicadores de compromisso (IP, domínios, hashes) e avisos de vulnerabilidades."}]},
       {id:"cycle",type:"timeline",slide:"Ciclo de resposta",kicker:"NIST SP 800-61",title:"O ciclo de resposta a incidentes",
        items:[
-         {title:"1. Preparação",text:"Política e plano de resposta, equipa (CSIRT), contactos e escalonamento, playbooks, ferramentas, backups testados, formação e exercícios (tabletop)."},
-         {title:"2. Deteção e análise",text:"Recolha de alertas e eventos, triagem, validação (verdadeiro/falso positivo), classificação por categoria e severidade, documentação de tudo com cadeia de custódia."},
-         {title:"3. Contenção",text:"Limitar o dano: isolar o host da rede (mantendo-o ligado para preservar evidência), desativar contas comprometidas, bloquear tráfego malicioso, aplicar contenção de curto e longo prazo."},
+         {title:"1. Preparação",text:"Política e plano de resposta, equipa (CSIRT), contactos e escalonamento, playbooks, ferramentas, backups testados, formação e exercícios."},
+         {title:"2. Deteção e análise",text:"Recolha de alertas e eventos, triagem, validação (verdadeiro/falso positivo), classificação por categoria e severidade, documentação com cadeia de custódia."},
+         {title:"3. Contenção",text:"Limitar o dano: isolar o host da rede (mantendo-o ligado para preservar evidência), desativar contas comprometidas, bloquear tráfego malicioso."},
          {title:"4. Erradicação e recuperação",text:"Remover a causa (malware, contas, backdoors), aplicar patches, restaurar a partir de backups válidos e devolver o serviço com monitorização reforçada."},
          {title:"5. Atividade pós-incidente",text:"Lições aprendidas: o que aconteceu, como foi detetado, o que funcionou mal, que alterações de controlos e de processo são necessárias."}]},
       {id:"severity",type:"table",slide:"Classificação",kicker:"Priorização",title:"Classificação e priorização",
@@ -1622,20 +1717,20 @@ const courseData = {
          {t:"RESPOSTA",d:"Playbooks, contenção, comunicação e lições aprendidas.",tone:"success",icon:"shield"}],
        note:"Sem retenção adequada de logs não há investigação possível: defina prazos de retenção coerentes com requisitos legais e operacionais."},
       {id:"callout",type:"callout",tone:"warning",icon:"alert",slide:"Atenção",title:"ATENÇÃO",
-       html:`<p><strong>Não desligar imediatamente uma máquina comprometida</strong> sem avaliar: pode perder evidência volátil (memória, ligações ativas, chaves) e alertar o atacante. Prefira <strong>isolar da rede</strong> mantendo o sistema ligado, e capture memória se tiver procedimento definido.</p>
+       html:`<p><strong>Não desligar imediatamente uma máquina comprometida</strong> sem avaliar: pode perder evidência volátil (memória, ligações ativas) e alertar o atacante. Prefira <strong>isolar da rede</strong> mantendo o sistema ligado.</p>
        <p><strong>Cadeia de custódia</strong>: registe quem acedeu a quê, quando e porquê. Sem isso, a evidência perde valor legal.</p>
-       <p><strong>Backups</strong> só contam se forem testados, protegidos contra alteração (imutáveis ou offline) e restauráveis dentro do objetivo de tempo (RTO) e de ponto de recuperação (RPO).</p>`},
+       <p><strong>Backups</strong> só contam se forem testados, protegidos contra alteração (imutáveis ou offline) e restauráveis dentro do RTO e do RPO.</p>`},
       {id:"think",type:"think",slide:"Pense",kicker:"Desafio",title:"Pense: conta comprometida",
        prompt:"O SIEM alerta para 40 inícios de sessão falhados e um bem-sucedido, às 03h12, a partir de um país onde a universidade não tem atividade, numa conta de um funcionário dos serviços académicos.",
        items:["Qual é a primeira ação e porquê?","Que dados recolheria para confirmar o compromisso?","Que medidas de contenção e de erradicação aplicaria?"],
        answer:{title:"Resposta sugerida",items:[
-         "Primeira ação: conter o risco de identidade — desativar ou suspender a conta, revogar sessões ativas e tokens, e forçar reposição de credenciais com MFA. É reversível, rápido e limita o dano enquanto se investiga.",
-         "Logs de autenticação (origem, user-agent, horário), atividades realizadas após o início de sessão (acessos a dados, alterações, exports), logs de correio (regras de reencaminhamento criadas), eventos do endpoint do utilizador, e se a credencial consta de fugas conhecidas.",
-         "Contenção: bloquear o endereço de origem, isolar o endpoint, revogar certificados/tokens, avisar o utilizador por canal alternativo. Erradicação: verificar e remover regras de correio maliciosas e persistência no endpoint, aplicar patches, rever privilégios. Recuperação e pós-incidente: monitorização reforçada, notificação conforme obrigações legais (ex.: RGPD, se houver dados pessoais) e lições aprendidas."]}},
+         "Primeira ação: conter o risco de identidade — desativar ou suspender a conta, revogar sessões ativas e tokens, forçar reposição de credenciais com MFA. É reversível, rápido e limita o dano.",
+         "Logs de autenticação (origem, user-agent, horário), atividades após o início de sessão (acessos, alterações, exports), regras de reencaminhamento de correio criadas, eventos do endpoint, e se a credencial consta de fugas conhecidas.",
+         "Contenção: bloquear o endereço de origem, isolar o endpoint, revogar certificados/tokens. Erradicação: remover regras de correio maliciosas e persistência, aplicar patches, rever privilégios. Pós-incidente: monitorização reforçada, notificação conforme obrigações legais e lições aprendidas."]}},
       {id:"summary",type:"summary",slide:"Resumo",kicker:"Síntese",title:"Resumo da unidade",
        items:["Monitorização exige telemetria diversa, relógios sincronizados e retenção adequada de logs.",
               "SIEM correlaciona; EDR/NDR dão visibilidade de endpoint e de rede; o SOC transforma alertas em decisões.",
-              "O ciclo NIST SP 800-61 tem cinco momentos: preparar, detetar e analisar, conter, erradicar e recuperar, aprender.",
+              "O ciclo NIST SP 800-61: preparar, detetar e analisar, conter, erradicar e recuperar, aprender.",
               "Classificação por severidade permite priorizar com recursos limitados.",
               "MTTD e MTTR são os indicadores que mostram se o programa de segurança está a melhorar."]}
     ]
@@ -1662,7 +1757,7 @@ const courseData = {
     {term:"TLS",cat:"Criptografia",def:"Transport Layer Security: protocolo criptográfico sucessor do SSL que garante confidencialidade, integridade e autenticação do servidor (e opcionalmente do cliente) sobre TCP. Versões atuais: TLS 1.2 e TLS 1.3."},
     {term:"HTTPS",cat:"Redes",def:"HTTP sobre TLS: assegura a autenticidade do sítio através de certificados X.509 e garante confidencialidade e integridade dos dados trocados entre cliente e servidor."},
     {term:"DNSSEC",cat:"Redes",def:"Conjunto de extensões do DNS que assinam criptograficamente os registos das zonas, permitindo que um resolver valide a origem e a integridade das respostas. Garante autenticidade dos dados, não confidencialidade."},
-    {term:"MFA",cat:"Controlos",def:"Multi-Factor Authentication: exige a combinação de dois ou mais fatores de autenticação independentes (conhecimento, posse, inherência) para conceder acesso."},
+    {term:"MFA",cat:"Controlos",def:"Multi-Factor Authentication: exige a combinação de dois ou mais fatores de autenticação independentes (conhecimento, posse, inerência) para conceder acesso."},
     {term:"PKI",cat:"Criptografia",def:"Public Key Infrastructure: conjunto de autoridades de certificação, repositórios, políticas e procedimentos que permitem ligar de forma confiável chaves públicas a identidades através de certificados X.509."},
     {term:"DMZ",cat:"Redes",def:"Zona desmilitarizada: sub-rede intermédia entre a Internet e a rede interna onde se colocam os serviços publicados; limita o dano caso um serviço exposto seja comprometido."},
     {term:"CVE",cat:"Fundamentos",def:"Common Vulnerabilities and Exposures: catálogo público de vulnerabilidades conhecidas, em que cada entrada tem um identificador único no formato CVE-AAAA-NNNN."},
@@ -1678,10 +1773,11 @@ const courseData = {
    --------------------------------------------------------------------------- */
 const STORE="sr.v1.";
 const state={
-  view:"home", unitId:null, glossTerm:null,
-  theme:"light", fontLevel:1, presFont:1.4, laser:false, autoPresent:false,
-  completed:[], seen:{},
-  presActive:false, slides:[], presIndex:0,
+  view:"home", unitId:null,
+  theme:"light", fontLevel:1, presFont:1.4, laser:false, autoPresent:false, sideCollapsed:false,
+  completed:[], seen:{}, lastUnit:null,
+  presActive:false, slides:[], presIndex:0, slideNotes:{}, kicker:"", foot:"",
+  presStart:0, timerInt:null, notesOpen:false,
   searchFilter:"all", searchResults:[], searchActive:-1, lastFocus:null,
   controlsTimer:null, pendingScroll:null
 };
@@ -1691,15 +1787,16 @@ const $$=s=>Array.from(document.querySelectorAll(s));
 
 function loadPreferences(){
   try{
-    state.theme=localStorage.getItem(STORE+"theme")|| (window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+    state.theme=localStorage.getItem(STORE+"theme")||((window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light");
     state.fontLevel=clamp(parseInt(localStorage.getItem(STORE+"fontLevel")||"1",10),0,2);
-    state.presFont=parseFloat(localStorage.getItem(STORE+"presFont")||"1.4");
+    state.presFont=clamp(parseFloat(localStorage.getItem(STORE+"presFont")||"1.4"),1,2.4);
     state.laser=localStorage.getItem(STORE+"laser")==="1";
     state.autoPresent=localStorage.getItem(STORE+"autoPresent")==="1";
+    state.sideCollapsed=localStorage.getItem(STORE+"side")==="1";
     state.completed=JSON.parse(localStorage.getItem(STORE+"completed")||"[]");
     state.seen=JSON.parse(localStorage.getItem(STORE+"seen")||"{}");
     state.lastUnit=localStorage.getItem(STORE+"lastUnit")||null;
-  }catch(e){/* armazenamento indisponível: usa valores por omissão */}
+  }catch(e){}
 }
 function savePreferences(){
   try{
@@ -1708,6 +1805,7 @@ function savePreferences(){
     localStorage.setItem(STORE+"presFont",String(state.presFont));
     localStorage.setItem(STORE+"laser",state.laser?"1":"0");
     localStorage.setItem(STORE+"autoPresent",state.autoPresent?"1":"0");
+    localStorage.setItem(STORE+"side",state.sideCollapsed?"1":"0");
     localStorage.setItem(STORE+"completed",JSON.stringify(state.completed));
     localStorage.setItem(STORE+"seen",JSON.stringify(state.seen));
     if(state.lastUnit)localStorage.setItem(STORE+"lastUnit",state.lastUnit);
@@ -1725,11 +1823,11 @@ function unitById(id){return courseData.units.filter(function(u){return u.id===i
 function unitIndex(id){return courseData.units.findIndex(function(u){return u.id===id;});}
 function toast(msg){
   const t=$("#toast");t.textContent=msg;t.classList.add("is-visible");
-  clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove("is-visible");},2200);
+  clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove("is-visible");},2300);
 }
 function collectText(obj,skip){
   skip=skip||{icon:1,tone:1,variant:1,tag:1,type:1,id:1,kicker:1};
-  let out=[];
+  const out=[];
   (function walk(o){
     if(o==null)return;
     if(typeof o==="string"){out.push(o);return;}
@@ -1747,22 +1845,20 @@ function svgCIA(){
   const cx=320,cy=215,R=150;
   const pts=[[cx,cy-R],[cx-R*0.87,cy+R*0.55],[cx+R*0.87,cy+R*0.55]];
   const labels=[
-    {x:pts[0][0],y:pts[0][1]-34,t:"CONFIDENCIALIDADE",s:"acesso apenas autorizado",ic:"#i-lock",c:"var(--accent)"},
-    {x:pts[1][0]-14,y:pts[1][1]+52,t:"INTEGRIDADE",s:"sem alterações não autorizadas",ic:"#i-check",c:"var(--info)"},
-    {x:pts[2][0]+14,y:pts[2][1]+52,t:"DISPONIBILIDADE",s:"acessível quando necessário",ic:"#i-activity",c:"var(--success)"}
+    {x:pts[0][0],y:pts[0][1]-34,t:"CONFIDENCIALIDADE",s:"acesso apenas autorizado",ic:"#i-lock",c:"var(--accent)",anchor:"middle",dx:0,dy1:-8,dy2:-38,dy3:-22,ox:0},
+    {x:pts[1][0]-14,y:pts[1][1]+52,t:"INTEGRIDADE",s:"sem alterações não autorizadas",ic:"#i-check",c:"var(--info)",anchor:"end",dx:-32,dy1:14,dy2:4,dy3:22,ox:0},
+    {x:pts[2][0]+14,y:pts[2][1]+52,t:"DISPONIBILIDADE",s:"acessível quando necessário",ic:"#i-activity",c:"var(--success)",anchor:"start",dx:32,dy1:14,dy2:4,dy3:22,ox:0}
   ];
-  let g="";
-  g+='<defs><linearGradient id="ciaGrad" x1="0" y1="0" x2="1" y2="1">'+
-     '<stop offset="0%" stop-color="var(--accent)" stop-opacity=".20"/>'+
-     '<stop offset="100%" stop-color="var(--success)" stop-opacity=".14"/></linearGradient></defs>';
+  let g='<defs><linearGradient id="ciaGrad" x1="0" y1="0" x2="1" y2="1">'+
+        '<stop offset="0%" stop-color="var(--accent)" stop-opacity=".20"/>'+
+        '<stop offset="100%" stop-color="var(--success)" stop-opacity=".14"/></linearGradient></defs>';
   g+='<polygon points="'+pts.map(function(p){return p[0]+","+p[1];}).join(" ")+'" fill="url(#ciaGrad)" stroke="var(--accent)" stroke-opacity=".55" stroke-width="2"/>';
-  labels.forEach(function(l,i){
-    const anchor=i===0?"middle":(i===1?"end":"start");
+  labels.forEach(function(l){
     g+='<g transform="translate('+l.x+','+l.y+')">';
-    g+='<circle cx="0" cy="'+(i===0?-8:14)+'" r="21" fill="var(--surface)" stroke="'+l.c+'" stroke-width="2"/>';
-    g+='<g transform="translate(-9,'+(i===0?-17:5)+')" stroke="'+l.c+'" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="'+l.ic+'" width="18" height="18"/></g>';
-    g+='<text class="dia-text" text-anchor="'+anchor+'" x="'+(i===0?0:(i===1?-32:32))+'" y="'+(i===0?-38:4)+'" font-size="15" fill="var(--text)">'+l.t+'</text>';
-    g+='<text class="dia-sub" text-anchor="'+anchor+'" x="'+(i===0?0:(i===1?-32:32))+'" y="'+(i===0?-22:22)+'" font-size="11.5" fill="var(--text-soft)">'+l.s+'</text>';
+    g+='<circle cx="0" cy="'+l.dy1+'" r="21" fill="var(--surface)" stroke="'+l.c+'" stroke-width="2"/>';
+    g+='<g transform="translate(-9,'+(l.dy1-9)+')"><use href="'+l.ic+'" width="18" height="18" stroke="'+l.c+'" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>';
+    g+='<text class="dia-text" text-anchor="'+l.anchor+'" x="'+(l.dx+l.ox)+'" y="'+l.dy2+'" font-size="15" fill="var(--text)">'+l.t+'</text>';
+    g+='<text class="dia-sub" text-anchor="'+l.anchor+'" x="'+(l.dx+l.ox)+'" y="'+l.dy3+'" font-size="11.5" fill="var(--text-soft)">'+l.s+'</text>';
     g+='</g>';
   });
   g+='<circle cx="'+cx+'" cy="'+cy+'" r="52" fill="var(--surface)" stroke="var(--border-strong)" stroke-width="1.5"/>';
@@ -1770,7 +1866,6 @@ function svgCIA(){
   g+='<text class="dia-text" text-anchor="middle" x="'+cx+'" y="'+(cy+14)+'" font-size="13" fill="var(--text)">DA INFORMAÇÃO</text>';
   return '<svg viewBox="0 0 640 400" role="img" aria-label="Diagrama da tríade CIA: confidencialidade, integridade e disponibilidade">'+g+'</svg>';
 }
-
 function svgLayers(layers){
   const W=760,bx=150,bw=460,bh=48,gap=26,top=26;
   const H=top+layers.length*(bh+gap)+8;
@@ -1779,7 +1874,7 @@ function svgLayers(layers){
         '<stop offset="100%" stop-color="var(--accent)" stop-opacity=".03"/></linearGradient></defs>';
   layers.forEach(function(l,i){
     const y=top+i*(bh+gap);
-    const depth=i/(layers.length-1||1);
+    const depth=i/((layers.length-1)||1);
     g+='<g>';
     g+='<rect x="'+bx+'" y="'+y+'" width="'+bw+'" height="'+bh+'" rx="10" fill="url(#layGrad)" stroke="var(--accent)" stroke-opacity="'+(0.75-depth*0.45).toFixed(2)+'" stroke-width="1.6"/>';
     g+='<circle cx="'+(bx-34)+'" cy="'+(y+bh/2)+'" r="13" fill="var(--surface)" stroke="var(--accent)" stroke-opacity=".55" stroke-width="1.4"/>';
@@ -1799,7 +1894,6 @@ function svgLayers(layers){
   g+='<text class="dia-sub" transform="translate('+(bx-72)+','+midY+') rotate(-90)" text-anchor="middle" font-size="12" fill="var(--text-soft)">EXTERIOR → NÚCLEO</text>';
   return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Diagrama das camadas de defesa em profundidade, do utilizador aos dados">'+g+'</svg>';
 }
-
 function svgDMZ(){
   let g='';
   const box=function(x,y,w,h,title,sub,stroke,fill){
@@ -1823,7 +1917,7 @@ function svgDMZ(){
   const arrow=function(x1,y1,x2,y2,label,dash){
     let s='<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="var(--border-strong)" stroke-width="2"'+(dash?' stroke-dasharray="5 5"':'')+'/>';
     const a=Math.atan2(y2-y1,x2-x1);
-    s+='<path d="M'+x2+' '+y2+' L'+(x2-9*Math.cos(a-0.4))+' '+(y2-9*Math.sin(a-0.4))+' L'+(x2-9*Math.cos(a+0.4))+' '+(y2-9*Math.sin(a+0.4))+' Z" fill="var(--border-strong)"/>';
+    s+='<path d="M'+x2+' '+y2+' L'+(x2-9*Math.cos(a-0.4)).toFixed(1)+' '+(y2-9*Math.sin(a-0.4)).toFixed(1)+' L'+(x2-9*Math.cos(a+0.4)).toFixed(1)+' '+(y2-9*Math.sin(a+0.4)).toFixed(1)+' Z" fill="var(--border-strong)"/>';
     if(label)s+='<text class="dia-sub" text-anchor="middle" x="'+((x1+x2)/2)+'" y="'+(y1-8)+'" font-size="10.5" fill="var(--text-soft)">'+label+'</text>';
     return s;
   };
@@ -1834,7 +1928,7 @@ function svgDMZ(){
   g+=arrow(574,135,664,135,"");
   g+=arrow(574,201,664,201,"3306/5432");
   g+=arrow(574,267,664,267,"",true);
-  g+='<text class="dia-sub" x="24" y="270" font-size="11.5" fill="var(--text-soft)">Regras: apenas serviços publicados; DMZ não inicia ligações para a rede interna.</text>';
+  g+='<text class="dia-sub" x="24" y="272" font-size="11.5" fill="var(--text-soft)">Regras: apenas serviços publicados; a DMZ não inicia ligações para a rede interna.</text>';
   return '<svg viewBox="0 0 850 330" role="img" aria-label="Diagrama de zonas de rede com DMZ entre a Internet e a rede interna">'+g+'</svg>';
 }
 
@@ -1842,25 +1936,24 @@ function svgDMZ(){
    5. RENDERIZADORES DE SECÇÕES
    --------------------------------------------------------------------------- */
 const renderers={
-  prose(s){return '<div class="prose">'+s.html+'</div>'+(s.after?renderBlock(s.after):"");},
-  objectives(s){
-    return '<ol class="obj-list" style="list-style:none;padding:0;margin:0;display:grid;gap:.6rem">'+
+  prose:function(s){return '<div class="prose">'+s.html+'</div>'+(s.after?renderBlock(s.after):"");},
+  objectives:function(s){
+    return '<ol style="list-style:none;padding:0;margin:0;display:grid;gap:.6rem">'+
       s.items.map(function(it,i){
         const o=typeof it==="string"?{title:it,text:""}:it;
-        return '<li style="display:flex;gap:.75rem;align-items:flex-start;border:1px solid var(--border);background:var(--surface);border-radius:var(--r-md);padding:.7rem .9rem;box-shadow:var(--shadow-1)">'+
+        return '<li style="display:flex;gap:.75rem;align-items:flex-start;border:1px solid var(--border);background:var(--surface);border-radius:var(--r-md);padding:.7rem .9rem;box-shadow:var(--shadow-1);margin:0">'+
           '<span style="flex:none;width:1.9rem;height:1.9rem;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-family:var(--font-mono);font-size:.76rem;font-weight:700;border:1px solid var(--accent-border)">'+String(i+1).padStart(2,"0")+'</span>'+
           '<span><strong style="display:block;font-size:.95rem">'+esc(o.title)+'</strong>'+(o.text?'<span style="display:block;font-size:.85rem;color:var(--text-muted)">'+esc(o.text)+'</span>':'')+'</span></li>';
       }).join("")+'</ol>';
   },
-  cards(s){
-    const cols=s.cols||3;
-    return '<div class="card-grid" style="--cols:'+cols+'">'+s.cards.map(function(c){
+  cards:function(s){
+    return '<div class="card-grid" style="--cols:'+(s.cols||3)+'">'+s.cards.map(function(c){
       return '<article class="card tone-'+(c.tone||"neutral")+'">'+(c.tag?'<span class="tag">'+esc(c.tag)+'</span>':'')+
         '<span class="card-ico">'+icon(c.icon||"shield")+'</span>'+
         '<h3>'+esc(c.title)+'</h3><p>'+esc(c.text)+'</p></article>';
     }).join("")+'</div>';
   },
-  pillar(s){
+  pillar:function(s){
     return '<div class="pillar tone-'+(s.tone||"accent")+'">'+
       '<div class="pillar-head"><span class="card-ico">'+icon(s.icon||"shield")+'</span><h3>'+esc(s.title)+'</h3></div>'+
       '<p class="pillar-def">'+esc(s.def)+'</p>'+
@@ -1868,7 +1961,7 @@ const renderers={
         return '<div class="pillar-col"><h4>'+esc(c.h)+'</h4><ul>'+c.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ul></div>';
       }).join("")+'</div></div>';
   },
-  table(s){
+  table:function(s){
     let h='<div class="table-wrap"><table class="tbl">';
     if(s.caption)h+='<caption>'+esc(s.caption)+'</caption>';
     h+='<thead><tr>'+s.columns.map(function(c){return '<th scope="col">'+esc(c)+'</th>';}).join("")+'</tr></thead><tbody>';
@@ -1877,12 +1970,12 @@ const renderers={
     if(s.note)h+='<p class="flow-note">'+esc(s.note)+'</p>';
     return h;
   },
-  callout(s){
+  callout:function(s){
     return '<aside class="callout tone-'+(s.tone||"info")+'" role="note">'+
       '<span class="callout-ico">'+icon(s.icon||"alert")+'</span>'+
       '<div><h4>'+esc(s.title||"NOTA")+'</h4><div class="prose">'+s.html+'</div></div></aside>';
   },
-  think(s){
+  think:function(s){
     return '<div class="think"><div class="think-head"><span class="badge">'+icon("bulb")+' PENSE</span><h4>'+esc(s.title||"Desafio")+'</h4></div>'+
       '<div class="prose"><p>'+esc(s.prompt)+'</p></div>'+
       (s.items?'<p style="font-size:.86rem;color:var(--text-soft);margin-bottom:.3rem">Identifique / responda:</p><ol>'+s.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ol>':'')+
@@ -1890,7 +1983,7 @@ const renderers={
       '<div class="think-answer" hidden><h5>'+icon("circle-check")+' '+esc(s.answer.title||"Resposta")+'</h5><ol>'+
       s.answer.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ol></div></div>';
   },
-  diagram(s){
+  diagram:function(s){
     let svg="";
     if(s.variant==="cia")svg=svgCIA();
     else if(s.variant==="layers")svg=svgLayers(s.layers||[]);
@@ -1901,7 +1994,7 @@ const renderers={
     }).join("")+'</div>';
     return '<div class="diagram">'+svg+(s.note?'<p class="dia-caption">'+esc(s.note)+'</p>':'')+'</div>'+extra;
   },
-  flow(s){
+  flow:function(s){
     let h='<div class="flow">';
     s.steps.forEach(function(st,i){
       h+='<div class="flow-node tone-'+(st.tone||"neutral")+'"><span class="flow-idx">'+(i+1)+'</span><h4>'+icon(st.icon||"zap")+' '+esc(st.t)+'</h4><p>'+esc(st.d)+'</p></div>';
@@ -1911,51 +2004,39 @@ const renderers={
     if(s.note)h+='<p class="flow-note">'+icon("bulb")+' '+esc(s.note)+'</p>';
     return h;
   },
-  compare(s){
+  compare:function(s){
     return '<div class="compare">'+s.columns.map(function(c){
       return '<div class="compare-col tone-'+(c.tone||"neutral")+'"><header>'+icon(c.icon||"shield")+'<h4>'+esc(c.title)+'</h4></header><ul>'+
         c.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ul></div>';
     }).join("")+'</div>';
   },
-  timeline(s){
+  timeline:function(s){
     return '<ol class="timeline">'+s.items.map(function(i){
       return '<li><h4>'+esc(i.title)+'</h4><p>'+esc(i.text)+'</p></li>';
     }).join("")+'</ol>';
   },
-  terminal(s){
+  terminal:function(s){
     return '<div class="terminal"><div class="terminal-bar"><i></i><i></i><i></i><span>'+esc(s.caption||"consola")+'</span></div><pre><code>'+
       s.lines.map(function(l){return esc(l);}).join("\n")+'</code></pre></div>';
   },
-  checklist(s){
+  checklist:function(s){
     return '<ul class="checklist">'+s.items.map(function(i){
       return '<li>'+icon("circle-check")+'<span>'+esc(i)+'</span></li>';
     }).join("")+'</ul>';
   },
-  stats(s){
+  stats:function(s){
     return '<div class="stats">'+s.items.map(function(i){
       return '<div class="stat"><b>'+esc(i.value)+'</b><span>'+esc(i.label)+'</span></div>';
     }).join("")+'</div>';
   },
-  summary(s){
+  summary:function(s){
     return '<div class="summary-box"><ul>'+s.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ul></div>';
   }
 };
 function renderBlock(s){
   if(!s)return "";
   const fn=renderers[s.type];
-  if(!fn)return "";
-  if(s.type==="callout"){
-    return '<aside class="callout tone-'+(s.tone||"info")+'" role="note"><span class="callout-ico">'+icon(s.icon||"alert")+'</span>'+
-      '<div><h4>'+esc(s.title||"NOTA")+'</h4><div class="prose">'+s.html+'</div></div></aside>';
-  }
-  if(s.type==="think"){
-    return '<div class="think"><div class="think-head"><span class="badge">'+icon("bulb")+' PENSE</span><h4>'+esc(s.title||"Desafio")+'</h4></div>'+
-      '<div class="prose"><p>'+esc(s.prompt)+'</p></div>'+(s.items?'<ol>'+s.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ol>':'')+
-      '<button class="btn" data-action="reveal" aria-expanded="false">'+icon("eye")+'<span>Mostrar resposta</span></button>'+
-      '<div class="think-answer" hidden><h5>'+icon("circle-check")+' '+esc(s.answer.title||"Resposta")+'</h5><ol>'+
-      s.answer.items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ol></div></div>';
-  }
-  return fn(s);
+  return fn?fn(s):"";
 }
 function renderSection(s,unit){
   const body=renderBlock(s);
@@ -1966,6 +2047,20 @@ function renderSection(s,unit){
     : "";
   return '<section class="section" id="'+unit.id+"--"+s.id+'" data-sec="'+s.id+'"'+
     (s.slide?' data-slide="'+esc(s.slide)+'"':"")+(s.title?' aria-labelledby="'+hid+'"':"")+'>'+head+body+'</section>';
+}
+function deriveNotes(s){
+  if(s.notes)return s.notes;
+  const n=[];
+  if(s.lead)n.push(s.lead);
+  if(s.def)n.push(s.def);
+  if(s.prompt)n.push(s.prompt);
+  if(s.html){const m=s.html.match(/<p>([\s\S]*?)<\/p>/);if(m)n.push(stripTags(m[1]));}
+  if(s.items&&s.items.length)s.items.slice(0,4).forEach(function(i){n.push(typeof i==="string"?i:i.title);});
+  if(s.cards)s.cards.slice(0,4).forEach(function(c){n.push(c.title+" — "+c.text);});
+  if(s.steps)s.steps.slice(0,5).forEach(function(st){n.push(st.t+": "+st.d);});
+  if(s.cols&&s.cols.length&&s.cols[0].items)s.cols[0].items.slice(0,3).forEach(function(i){n.push(i);});
+  if(s.rows)s.rows.slice(0,3).forEach(function(r){n.push(r.join(" · "));});
+  return n.slice(0,6);
 }
 
 /* ---------------------------------------------------------------------------
@@ -2025,11 +2120,11 @@ function renderHome(){
      }).join("")+'</div></section>';
 
   h+='<section class="section" data-slide="Mapa da disciplina"><header class="sec-head"><span class="sec-kicker">Programa</span><h2>Mapa da disciplina</h2>'+
-     '<p class="sec-lead">Clique numa unidade para abrir o conteúdo. O marcador '+icon("check")+' regista a unidade como concluída.</p></header><div class="map-grid">';
+     '<p class="sec-lead">Clique numa unidade para abrir o conteúdo. O marcador de conclusão é guardado no navegador.</p></header><div class="map-grid">';
   courseData.units.forEach(function(u){
     const p=progressOf(u.id),done=state.completed.indexOf(u.id)>-1;
-    h+='<div class="map-card'+(done?" is-done":"")+'" role="group" aria-label="Unidade '+u.num+'">'+
-       '<button class="map-open" data-action="open-unit" data-unit="'+u.id+'" style="all:unset;display:flex;flex-direction:column;gap:.6rem;cursor:pointer;flex:1">'+
+    h+='<div class="map-card'+(done?" is-done":"")+'">'+
+       '<button class="map-open" data-action="open-unit" data-unit="'+u.id+'" aria-label="Abrir unidade '+u.num+': '+esc(u.title)+'">'+
          '<span class="map-card-top"><span class="map-num">'+u.num+'</span><h3>'+esc(u.title)+'</h3></span>'+
          '<p>'+esc(u.tagline)+'</p>'+
          '<span class="map-topics">'+u.topics.map(function(t){return '<span>'+esc(t)+'</span>';}).join("")+'</span>'+
@@ -2040,8 +2135,8 @@ function renderHome(){
 
   h+='<section class="section" data-slide="Como usar"><header class="sec-head"><span class="sec-kicker">Guia</span><h2>Como usar esta página</h2></header>'+
      '<div class="card-grid" style="--cols:3">'+
-       '<article class="card tone-info"><span class="card-ico">'+icon("book")+'</span><h3>Modo de estudo</h3><p>Navegue pelas unidades na barra lateral. O progresso é guardado automaticamente no navegador.</p></article>'+
-       '<article class="card tone-accent"><span class="card-ico">'+icon("monitor")+'</span><h3>Modo apresentação</h3><p>Abra uma unidade e prima <kbd>P</kbd>. Cada secção transforma-se num slide projetável, com laser, índice e controlo de fonte.</p></article>'+
+       '<article class="card tone-info"><span class="card-ico">'+icon("panel")+'</span><h3>Navegação flexível</h3><p>Use a barra lateral para saltar entre unidades. Pode recolhê-la ao formato de rail com o botão de seta, ganhando área de leitura.</p></article>'+
+       '<article class="card tone-accent"><span class="card-ico">'+icon("monitor")+'</span><h3>Modo apresentação</h3><p>Abra uma unidade e prima <kbd>P</kbd>. Slides com auto-ajuste ao ecrã, laser, notas do orador (<kbd>N</kbd>), ecrã preto (<kbd>B</kbd>) e índice (<kbd>G</kbd>).</p></article>'+
        '<article class="card tone-success"><span class="card-ico">'+icon("printer")+'</span><h3>Impressão</h3><p>Use o botão Imprimir para obter uma versão limpa, sem menus nem botões, com os diagramas preservados.</p></article>'+
      '</div>'+
      '<div class="table-wrap" style="margin-top:1rem"><table class="tbl"><caption>Atalhos de teclado</caption><thead><tr><th scope="col">Tecla</th><th scope="col">Ação</th></tr></thead><tbody>'+
@@ -2062,8 +2157,8 @@ function renderHome(){
 function renderUnit(unitId){
   const u=unitById(unitId);
   if(!u){renderHome();return;}
-  state.unitId=u.id;
-  try{localStorage.setItem(STORE+"lastUnit",u.id);}catch(e){}
+  state.unitId=u.id;state.lastUnit=u.id;
+  savePreferences();
   const idx=unitIndex(u.id);
   const prev=courseData.units[idx-1],next=courseData.units[idx+1];
   const p=progressOf(u.id),done=state.completed.indexOf(u.id)>-1;
@@ -2095,7 +2190,6 @@ function renderUnit(unitId){
      '<span class="here"><b>Você está aqui</b>Unidade '+u.num+' de '+courseData.units.length+'</span>'+
      (next?'<a class="next" href="#/unidade/'+next.id+'"><span><small>Próxima unidade</small><strong>'+next.num+' · '+esc(next.title)+'</strong></span>'+icon("right")+'</a>':'<span></span>')+
      '</div>';
-  h+='<p class="here no-print" style="margin-top:.8rem">'+crumbs([{label:"Segurança em Redes",href:"#/"},{label:"Unidade "+u.num},{label:u.title}]).replace('<nav class="crumbs"','<nav class="crumbs" style="justify-content:center"')+'</p>';
 
   $("#viewRoot").innerHTML=h;
   $("#printHead").textContent="Segurança em Redes · Unidade "+u.num+" — "+u.title;
@@ -2126,20 +2220,18 @@ function paintGlossary(q){
     if(!nq)return true;
     return norm(g.term).indexOf(nq)>-1||norm(g.def).indexOf(nq)>-1||norm(g.cat).indexOf(nq)>-1;
   });
-  $("#glossCount").textContent=items.length+" termo"+(items.length===1?"":"s");
+  const cnt=$("#glossCount");if(cnt)cnt.textContent=items.length+" termo"+(items.length===1?"":"s");
   if(!items.length){list.innerHTML='<p class="search-empty">Nenhum termo encontrado para “'+esc(q)+'”.</p>';return;}
   list.innerHTML=items.map(function(g){
-    return '<article class="gloss-item" id="gl-'+esc(g.term.replace(/\s+/g,"-").toLowerCase())+'"><h3>'+
-      hl(esc(g.term),q)+'<span class="cat">'+esc(g.cat)+'</span></h3><p>'+hl(esc(g.def),q)+'</p></article>';
+    return '<article class="gloss-item"><h3>'+hl(esc(g.term),q)+'<span class="cat">'+esc(g.cat)+'</span></h3><p>'+hl(esc(g.def),q)+'</p></article>';
   }).join("");
 }
 function hl(text,q){
   const nq=norm(q).trim();if(!nq)return text;
-  const plain=text;
-  const np=norm(plain);
+  const np=norm(text);
   const i=np.indexOf(nq);
-  if(i<0)return plain;
-  return plain.slice(0,i)+'<mark>'+plain.slice(i,i+nq.length)+'</mark>'+plain.slice(i+nq.length);
+  if(i<0)return text;
+  return text.slice(0,i)+'<mark>'+text.slice(i,i+nq.length)+'</mark>'+text.slice(i+nq.length);
 }
 
 /* ---------------------------------------------------------------------------
@@ -2149,8 +2241,8 @@ function renderSidebar(){
   const list=$("#unitList");
   list.innerHTML=courseData.units.map(function(u){
     const p=progressOf(u.id),done=state.completed.indexOf(u.id)>-1;
-    return '<li class="unit-item'+(state.unitId===u.id?" is-active":"")+'" data-unit-item="'+u.id+'">'+
-      '<a class="unit-link" href="#/unidade/'+u.id+'"'+(state.unitId===u.id?' aria-current="page"':'')+'>'+
+    return '<li class="unit-item'+(state.unitId===u.id&&state.view==="unit"?" is-active":"")+'" data-unit-item="'+u.id+'">'+
+      '<a class="unit-link" href="#/unidade/'+u.id+'" title="'+esc(u.num+' — '+u.title)+'"'+(state.unitId===u.id&&state.view==="unit"?' aria-current="page"':'')+'>'+
         '<span class="unit-num">'+u.num+'</span>'+
         '<span style="min-width:0;flex:1"><span class="unit-name">'+esc(u.title)+'</span>'+
         '<span class="unit-mini" aria-hidden="true"><i style="width:'+p+'%"></i></span></span>'+
@@ -2161,6 +2253,16 @@ function renderSidebar(){
   $("#navHome").classList.toggle("is-active",state.view==="home");
   $("#navGloss").classList.toggle("is-active",state.view==="glossary");
   updateProgress();
+}
+function applySideCollapsed(){
+  document.body.classList.toggle("side-collapsed",state.sideCollapsed);
+  const b=$('[data-action="side-toggle"]');
+  if(b){
+    b.setAttribute("aria-expanded",state.sideCollapsed?"false":"true");
+    const lbl=state.sideCollapsed?"Expandir barra lateral":"Recolher barra lateral";
+    b.setAttribute("aria-label",lbl);b.title=lbl;
+    b.innerHTML=icon(state.sideCollapsed?"right":"left");
+  }
 }
 function updateProgress(){
   const dp=disciplineProgress();
@@ -2180,16 +2282,14 @@ function updateProgress(){
     if(hi)hi.textContent="Unidade "+u.num;
     if(ht)ht.textContent=u.title;
   }else if(state.view==="glossary"){
-    if(hi)hi.textContent="Glossário";if(ht)ht.textContent=courseData.glossary.length+" termos técnicos";
+    if(hi)hi.textContent="Glossário";
+    if(ht)ht.textContent=courseData.glossary.length+" termos técnicos";
   }else{
-    if(hi)hi.textContent="Início";if(ht)ht.textContent="Página da disciplina";
+    if(hi)hi.textContent="Início";
+    if(ht)ht.textContent="Página da disciplina";
   }
-  const item=$$('.unit-item[data-unit-item]');
-  item.forEach(function(el){
+  $$('.unit-item[data-unit-item]').forEach(function(el){
     const id=el.getAttribute("data-unit-item");
-    el.classList.toggle("is-active",state.view==="unit"&&state.unitId===id);
-    const a=el.querySelector(".unit-link");
-    if(a){if(state.view==="unit"&&state.unitId===id)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");}
     const bar2=el.querySelector(".unit-mini > i");if(bar2)bar2.style.width=progressOf(id)+"%";
   });
 }
@@ -2207,26 +2307,18 @@ function observeSections(unitId){
         io.unobserve(en.target);
       }
     });
-    if(changed){savePreferences();updateProgress();renderSidebarProgressOnly();}
+    if(changed){savePreferences();updateProgress();}
   },{threshold:0.45,rootMargin:"-60px 0px -20% 0px"});
   $$('#viewRoot .section[data-sec]').forEach(function(s){
     if(state.seen[unitId].indexOf(s.getAttribute("data-sec"))<0)io.observe(s);
   });
-}
-function renderSidebarProgressOnly(){
-  $$('.unit-item[data-unit-item]').forEach(function(el){
-    const id=el.getAttribute("data-unit-item");
-    const bar=el.querySelector(".unit-mini > i");if(bar)bar.style.width=progressOf(id)+"%";
-  });
-  const bar=$("#sideProgBar");if(bar){const dp=disciplineProgress();bar.firstElementChild.style.width=dp+"%";bar.setAttribute("aria-valuenow",String(dp));}
-  const txt=$("#sideProgTxt");if(txt)txt.textContent=disciplineProgress()+"%";
 }
 function router(){
   const hash=location.hash||"#/";
   const m=hash.match(/^#\/unidade\/([a-z0-9]+)/i);
   const g=hash.match(/^#\/glossario(?:\/(.+))?$/i);
   document.body.classList.remove("drawer-open");
-  $(".menu-toggle").setAttribute("aria-expanded","false");
+  const mt=$(".menu-toggle");if(mt)mt.setAttribute("aria-expanded","false");
   if(m&&unitById(m[1])){
     state.view="unit";state.unitId=m[1];renderUnit(m[1]);
   }else if(g){
@@ -2248,13 +2340,11 @@ function router(){
    --------------------------------------------------------------------------- */
 function applyTheme(){
   document.documentElement.setAttribute("data-theme",state.theme);
-  $("#themeIcon").setAttribute("href",state.theme==="dark"?"#i-sun":"#i-moon");
-  const use=$("#themeIcon").querySelector("use");if(use)use.setAttribute("href",state.theme==="dark"?"#i-sun":"#i-moon");
-  const btn=$('[data-action="theme"]');if(btn)btn.setAttribute("aria-label",state.theme==="dark"?"Ativar modo claro":"Ativar modo escuro");
+  const use=$("#themeIcon").querySelector("use");
+  if(use)use.setAttribute("href",state.theme==="dark"?"#i-sun":"#i-moon");
 }
 function toggleTheme(){
   state.theme=state.theme==="dark"?"light":"dark";applyTheme();savePreferences();
-  if(state.presActive)renderSlide(state.presIndex);
   toast(state.theme==="dark"?"Modo escuro ativado":"Modo claro ativado");
 }
 function applyFontScale(){
@@ -2268,27 +2358,33 @@ function setFontLevel(l){
   toast("Tamanho da fonte: "+names[state.fontLevel]);
 }
 function increaseFont(){
-  if(state.presActive){state.presFont=clamp(+(state.presFont+0.1).toFixed(2),1,2.4);applyFontScale();savePreferences();fitSlide();toast("Fonte do slide: "+Math.round(state.presFont*100)+"%");}
-  else setFontLevel(state.fontLevel+1);
+  if(state.presActive){
+    state.presFont=clamp(+(state.presFont+0.1).toFixed(2),1,2.4);
+    applyFontScale();savePreferences();fitSlide();
+    toast("Fonte do slide: "+Math.round(state.presFont*100)+"%");
+  }else setFontLevel(state.fontLevel+1);
 }
 function decreaseFont(){
-  if(state.presActive){state.presFont=clamp(+(state.presFont-0.1).toFixed(2),1,2.4);applyFontScale();savePreferences();fitSlide();toast("Fonte do slide: "+Math.round(state.presFont*100)+"%");}
-  else setFontLevel(state.fontLevel-1);
+  if(state.presActive){
+    state.presFont=clamp(+(state.presFont-0.1).toFixed(2),1,2.4);
+    applyFontScale();savePreferences();fitSlide();
+    toast("Fonte do slide: "+Math.round(state.presFont*100)+"%");
+  }else setFontLevel(state.fontLevel-1);
 }
 function toggleFullscreen(){
   const d=document;
-  if(!d.fullscreenElement&&!d.webkitFullscreenElement){
+  const fs=d.fullscreenElement||d.webkitFullscreenElement;
+  if(!fs){
     const el=d.documentElement;
     const p=el.requestFullscreen?el.requestFullscreen():(el.webkitRequestFullscreen?el.webkitRequestFullscreen():null);
     if(p&&p.catch)p.catch(function(){toast("Ecrã inteiro não permitido pelo navegador");});
   }else{
-    (d.exitFullscreen?d.exitFullscreen():d.webkitExitFullscreen&&d.webkitExitFullscreen());
+    if(d.exitFullscreen)d.exitFullscreen();else if(d.webkitExitFullscreen)d.webkitExitFullscreen();
   }
 }
 function onFullscreenChange(){
   const on=!!(document.fullscreenElement||document.webkitFullscreenElement);
   const u=$("#fsIcon").querySelector("use");if(u)u.setAttribute("href",on?"#i-collapse":"#i-expand");
-  $$('[data-action="fullscreen"]').forEach(function(b){b.setAttribute("aria-label",on?"Sair de ecrã inteiro":"Ecrã inteiro");});
   fitSlide();
 }
 function toggleLaser(force){
@@ -2316,97 +2412,118 @@ function moveLaser(e){
 function buildSlides(){
   const root=$("#viewRoot");
   const nodes=Array.from(root.querySelectorAll("[data-slide]"));
-  const slides=[];
+  const slides=[];const notes={};
   let kicker="Segurança em Redes",foot="Segurança em Redes · Ciências de Computação";
   if(state.view==="unit"&&state.unitId){
     const u=unitById(state.unitId);
     kicker="Unidade "+u.num+" · "+u.title;
     foot="Unidade "+u.num+" — "+u.title;
-    slides.push({title:u.title,hero:true,html:
+    slides.push({title:u.title,html:
       '<div class="slide-title-hero"><span class="badge">'+icon("list")+' Unidade '+u.num+'</span>'+
       '<h1>'+esc(u.title)+'</h1><p>'+esc(u.tagline)+'</p>'+
       '<div class="meta-row"><span class="chip">'+icon("grad")+' '+esc(courseData.course.program)+'</span>'+
       '<span class="chip">'+icon("clock")+' '+esc(u.duration)+'</span>'+
       '<span class="chip">'+icon("shield")+' '+u.sections.length+' secções</span></div></div>'});
+    notes[u.title]=[u.intro,"Duração prevista: "+u.duration,"Tópicos: "+u.topics.join(", ")];
   }else if(state.view==="glossary"){
     kicker="Glossário";foot="Segurança em Redes · Glossário";
-    slides.push({title:"Glossário",hero:true,html:'<div class="slide-title-hero"><span class="badge">'+icon("book")+' Referência</span><h1>Glossário</h1><p>'+courseData.glossary.length+' termos técnicos de segurança em redes.</p></div>'});
+    slides.push({title:"Glossário",html:'<div class="slide-title-hero"><span class="badge">'+icon("book")+' Referência</span><h1>Glossário</h1><p>'+courseData.glossary.length+' termos técnicos de segurança em redes.</p></div>'});
+    notes["Glossário"]=["Percorrer termos pedidos pelos estudantes.","Relacionar cada termo com a unidade onde é aplicado."];
   }else{
-    kicker="Segurança em Redes";
-    slides.push({title:"Segurança em Redes",hero:true,html:
+    slides.push({title:"Segurança em Redes",html:
       '<div class="slide-title-hero"><span class="badge">'+icon("grad")+' Disciplina</span><h1>Segurança em Redes</h1>'+
       '<p>'+esc(courseData.course.subtitle)+'</p>'+
       '<div class="meta-row"><span class="chip">'+icon("book")+' '+esc(courseData.course.program)+'</span>'+
       '<span class="chip">'+icon("grad")+' Nível: '+esc(courseData.course.level)+'</span>'+
       '<span class="chip">'+icon("clock")+' '+esc(courseData.course.duration)+'</span></div></div>'});
+    notes["Segurança em Redes"]=["Apresentar a disciplina e o seu enquadramento no curso.","Referir avaliação, laboratórios e recursos da página."];
   }
-  nodes.forEach(function(n){
+  const u=state.view==="unit"?unitById(state.unitId):null;
+  nodes.forEach(function(n,idx){
     const clone=n.cloneNode(true);
-    clone.querySelectorAll("[id]").forEach(function(el){el.removeAttribute("id");});
-    clone.querySelectorAll("[data-action],.no-print").forEach(function(el){
-      if(el.hasAttribute("data-action")&&el.getAttribute("data-action")!=="reveal")el.remove();
+    clone.querySelectorAll("[data-action]").forEach(function(el){
+      if(el.getAttribute("data-action")!=="reveal")el.remove();
     });
-    clone.classList.add("section");
-    slides.push({title:n.getAttribute("data-slide"),html:clone.outerHTML});
+    let htmlStr=clone.outerHTML;
+    /* reescreve ids/gradientes para não colidir com a vista principal */
+    htmlStr=htmlStr.split('id="').join('id="pres-').split("url(#").join("url(#pres-").split('aria-labelledby="').join('aria-labelledby="pres-');
+    slides.push({title:n.getAttribute("data-slide"),html:htmlStr});
+    if(u){
+      const sec=u.sections.filter(function(s){return s.slide===n.getAttribute("data-slide");})[0];
+      if(sec)notes[sec.slide]=deriveNotes(sec);
+    }
   });
-  state.slides=slides;state.kicker=kicker;state.foot=foot;
+  state.slides=slides;state.slideNotes=notes;state.kicker=kicker;state.foot=foot;
 }
 function enterPresentationMode(){
   buildSlides();
   if(!state.slides.length){toast("Sem conteúdo para apresentar");return;}
-  state.presActive=true;state.presIndex=0;
+  state.presActive=true;state.presIndex=0;state.presStart=Date.now();
   document.body.classList.add("pres-on","no-scroll");
-  const p=$("#presentation");p.setAttribute("aria-hidden","false");
-  $("#presKicker").textContent=state.kicker||"Segurança em Redes";
-  $("#presFootLeft").textContent=state.foot||"Segurança em Redes";
+  $("#presentation").setAttribute("aria-hidden","false");
+  $("#presKicker").textContent=state.kicker;
+  $("#presFootLeft").textContent=state.foot;
   applyFontScale();
-  renderSlide(0);
+  renderSlide(0,"next");
   buildIndex();
-  if(state.laser)document.body.classList.add("laser-on");
-  $('[data-action="laser"]').setAttribute("aria-pressed",state.laser?"true":"false");
+  document.body.classList.toggle("laser-on",state.laser);
+  const lb=$('[data-action="laser"]');if(lb)lb.setAttribute("aria-pressed",state.laser?"true":"false");
+  startTimer();
   showControls();
-  toast("Modo apresentação · Esc para sair");
+  toast("Modo apresentação · ← → navegar · N notas · B ecrã preto · Esc sair");
 }
 function exitPresentationMode(){
   state.presActive=false;
-  document.body.classList.remove("pres-on","no-scroll");
+  document.body.classList.remove("pres-on","no-scroll","pres-black");
   $("#presentation").setAttribute("aria-hidden","true");
   $("#presIndex").classList.remove("is-open");
+  $("#presNotes").hidden=true;state.notesOpen=false;
+  const nb=$('[data-action="pres-notes"]');if(nb)nb.setAttribute("aria-pressed","false");
+  const bb=$('[data-action="pres-black"]');if(bb)bb.setAttribute("aria-pressed","false");
+  stopTimer();
   applyFontScale();
 }
-function renderSlide(i){
+function renderSlide(i,dir){
   if(!state.slides.length)return;
+  const prev=state.presIndex;
   state.presIndex=clamp(i,0,state.slides.length-1);
   const s=state.slides[state.presIndex];
   const el=$("#slideEl"),scale=$("#slideScale");
-  el.classList.remove("is-out");
+  el.classList.remove("anim-next","anim-prev");
+  void el.offsetWidth; /* reinicia a animação */
+  el.classList.add(state.presIndex>=prev?"anim-next":"anim-prev");
   scale.innerHTML=s.html;
   $("#presTopTitle").textContent=s.title;
   $("#presCount").textContent="Slide "+(state.presIndex+1)+" / "+state.slides.length;
+  $("#presCountTop").textContent=(state.presIndex+1)+" / "+state.slides.length;
   $("#presFootRight").textContent=s.title;
   $("#presProgressBar").style.width=(((state.presIndex+1)/state.slides.length)*100).toFixed(1)+"%";
   $$("#presIndexGrid .pres-index-item").forEach(function(b,k){b.classList.toggle("is-current",k===state.presIndex);});
-  fitSlide();
+  updateNotes();
+  requestAnimationFrame(fitSlide);
 }
 function fitSlide(){
   if(!state.presActive)return;
   const frame=$("#slideFrame"),fit=$("#slideFit"),scale=$("#slideScale");
   if(!frame||!fit||!scale)return;
-  scale.style.transform="none";fit.style.width="";fit.style.height="";frame.style.overflow="hidden";
+  scale.style.transform="none";scale.style.width="";scale.style.height="";
+  fit.style.width="";fit.style.height="";
+  frame.style.overflow="hidden";
   const fw=frame.clientWidth;
   if(!fw)return;
   scale.style.width=fw+"px";
+  scale.style.height="auto";
   const h=scale.offsetHeight||1;
   const avail=frame.clientHeight||1;
   let s=Math.min(1,avail/h);
-  s=Math.max(s,0.42);
+  s=Math.max(s,0.4);
   if(s<1){scale.style.transformOrigin="top left";scale.style.transform="scale("+s.toFixed(4)+")";}
   fit.style.width=(fw*s).toFixed(1)+"px";
   fit.style.height=(h*s).toFixed(1)+"px";
-  if(s<=0.42)frame.style.overflow="auto";
+  if(s<=0.4)frame.style.overflow="auto";
 }
-function nextSlide(){if(state.presIndex<state.slides.length-1)renderSlide(state.presIndex+1);else toast("Fim da apresentação");}
-function previousSlide(){if(state.presIndex>0)renderSlide(state.presIndex-1);}
+function nextSlide(){if(state.presIndex<state.slides.length-1)renderSlide(state.presIndex+1,"next");else toast("Fim da apresentação");}
+function previousSlide(){if(state.presIndex>0)renderSlide(state.presIndex-1,"prev");}
 function goToSlide(i){renderSlide(i);$("#presIndex").classList.remove("is-open");}
 function buildIndex(){
   $("#presIndexGrid").innerHTML=state.slides.map(function(s,i){
@@ -2418,15 +2535,47 @@ function toggleIndex(){
   const open=ix.classList.toggle("is-open");
   if(open){buildIndex();const cur=ix.querySelector(".is-current");if(cur)cur.focus();}
 }
+function toggleNotes(force){
+  state.notesOpen=typeof force==="boolean"?force:!state.notesOpen;
+  $("#presNotes").hidden=!state.notesOpen;
+  const b=$('[data-action="pres-notes"]');if(b)b.setAttribute("aria-pressed",state.notesOpen?"true":"false");
+  updateNotes();
+}
+function updateNotes(){
+  if(!state.notesOpen)return;
+  const s=state.slides[state.presIndex];
+  const list=state.slideNotes[s?s.title:""]||[];
+  $("#presNotesBody").innerHTML=list.length
+    ? '<ul>'+list.map(function(n){return '<li>'+esc(n)+'</li>';}).join("")+'</ul>'
+    : '<p class="empty">Sem notas para este slide.</p>';
+}
+function toggleBlackout(force){
+  const on=typeof force==="boolean"?force:!document.body.classList.contains("pres-black");
+  document.body.classList.toggle("pres-black",on);
+  const b=$('[data-action="pres-black"]');if(b)b.setAttribute("aria-pressed",on?"true":"false");
+  toast(on?"Ecrã preto — prima B para voltar":"Apresentação retomada");
+}
+function startTimer(){
+  stopTimer();
+  state.presStart=Date.now();
+  paintTimer();
+  state.timerInt=setInterval(paintTimer,1000);
+}
+function stopTimer(){if(state.timerInt){clearInterval(state.timerInt);state.timerInt=null;}}
+function paintTimer(){
+  const s=Math.floor((Date.now()-state.presStart)/1000);
+  const mm=String(Math.floor(s/60)).padStart(2,"0"),ss=String(s%60).padStart(2,"0");
+  const t=$("#presTimerTxt");if(t)t.textContent=mm+":"+ss;
+}
 function showControls(){
   const c=$("#presControls");
   c.classList.remove("is-hidden");
   clearTimeout(state.controlsTimer);
   state.controlsTimer=setTimeout(function(){
-    if(state.presActive&&!$("#presIndex").classList.contains("is-open")&&$("#searchModal").classList.contains("is-open")===false){
+    if(state.presActive&&!$("#presIndex").classList.contains("is-open")&&!$("#searchModal").classList.contains("is-open")){
       if(!c.matches(":hover"))c.classList.add("is-hidden");
     }
-  },3000);
+  },3200);
 }
 
 /* ---------------------------------------------------------------------------
@@ -2459,27 +2608,26 @@ function searchContent(q){
   searchIndex.forEach(function(e){
     if(state.searchFilter!=="all"&&e.type!==state.searchFilter)return;
     const nt=norm(e.title),nx=norm(e.text);
-    let score=0;
+    let score=0,ok=true;
     terms.forEach(function(t){
-      if(nt.indexOf(t)===0)score+=60;
-      else if(nt.indexOf(t)>-1)score+=40;
-      if(nx.indexOf(t)>-1)score+=12;
+      const inT=nt.indexOf(t)>-1,inX=nx.indexOf(t)>-1;
+      if(!inT&&!inX)ok=false;
+      if(nt.indexOf(t)===0)score+=60;else if(inT)score+=40;
+      if(inX)score+=12;
       if(e.type==="glossary"&&nt.indexOf(t)===0)score+=30;
     });
-    if(terms.every(function(t){return nt.indexOf(t)>-1||nx.indexOf(t)>-1;})){
-      out.push({e:e,score:score});
-    }
+    if(ok)out.push({e:e,score:score});
   });
   out.sort(function(a,b){return b.score-a.score;});
   return out.slice(0,14).map(function(o){return o.e;});
 }
 function snippet(text,q){
-  const nq=norm(q).trim().split(/\s+/)[0]||"";
+  const first=norm(q).trim().split(/\s+/)[0]||"";
   const plain=stripTags(text).replace(/\s+/g," ").trim();
-  if(!nq)return esc(plain.slice(0,150))+(plain.length>150?"…":"");
-  const i=norm(plain).indexOf(nq);
+  if(!first)return esc(plain.slice(0,150))+(plain.length>150?"…":"");
+  const i=norm(plain).indexOf(first);
   if(i<0)return esc(plain.slice(0,150))+(plain.length>150?"…":"");
-  const start=Math.max(0,i-60),end=Math.min(plain.length,i+nq.length+110);
+  const start=Math.max(0,i-60),end=Math.min(plain.length,i+first.length+110);
   return (start>0?"…":"")+hl(esc(plain.slice(start,end)),q)+(end<plain.length?"…":"");
 }
 function openSearch(){
@@ -2521,15 +2669,12 @@ function runSearch(q){
 function goSearchResult(i){
   const it=state.searchResults[i];if(!it)return;
   closeSearch();
-  if(it.type==="glossary"){
-    location.hash="#/glossario/"+encodeURIComponent(it.title);
-    return;
-  }
+  if(it.type==="glossary"){location.hash="#/glossario/"+encodeURIComponent(it.title);return;}
   if(it.unit){
     state.pendingScroll=it.sec||null;
     if(location.hash==="#/unidade/"+it.unit)router();
     else location.hash="#/unidade/"+it.unit;
-  }else if(it.sec===null){
+  }else{
     location.hash="#/";
   }
 }
@@ -2539,12 +2684,23 @@ function goSearchResult(i){
    --------------------------------------------------------------------------- */
 const actions={
   "toggle-drawer":function(){
-    const open=document.body.classList.toggle("drawer-open");
-    $(".menu-toggle").setAttribute("aria-expanded",open?"true":"false");
+    if(window.matchMedia("(max-width:860px)").matches){
+      const open=document.body.classList.toggle("drawer-open");
+      $(".menu-toggle").setAttribute("aria-expanded",open?"true":"false");
+    }else{
+      state.sideCollapsed=!state.sideCollapsed;
+      applySideCollapsed();savePreferences();
+      setTimeout(fitSlide,260);
+    }
   },
   "close-drawer":function(){
     document.body.classList.remove("drawer-open");
-    $(".menu-toggle").setAttribute("aria-expanded","false");
+    const mt=$(".menu-toggle");if(mt)mt.setAttribute("aria-expanded","false");
+  },
+  "side-toggle":function(){
+    state.sideCollapsed=!state.sideCollapsed;
+    applySideCollapsed();savePreferences();
+    setTimeout(fitSlide,260);
   },
   "open-unit":function(btn){location.hash="#/unidade/"+btn.getAttribute("data-unit");},
   "theme":toggleTheme,
@@ -2560,6 +2716,8 @@ const actions={
   "pres-font-dec":decreaseFont,
   "pres-index":toggleIndex,
   "pres-goto":function(btn){goToSlide(parseInt(btn.getAttribute("data-index"),10));},
+  "pres-notes":function(){toggleNotes();},
+  "pres-black":function(){toggleBlackout();},
   "laser":function(){toggleLaser();},
   "search-open":openSearch,
   "search-close":closeSearch,
@@ -2592,15 +2750,20 @@ const actions={
 
 document.addEventListener("click",function(ev){
   const el=ev.target.closest("[data-action]");
-  if(!el)return;
-  const a=el.getAttribute("data-action");
-  if(actions[a]){ev.preventDefault();actions[a](el);showControls();}
-  if(el.closest(".sidebar a")||el.tagName==="A")document.body.classList.remove("drawer-open");
-},{passive:false});
+  if(el){
+    const a=el.getAttribute("data-action");
+    if(actions[a]){ev.preventDefault();actions[a](el);if(state.presActive)showControls();}
+    return;
+  }
+  /* clique no slide avança (exceto sobre controlos interativos) */
+  if(state.presActive&&ev.target.closest("#slideFrame")&&!ev.target.closest("button,a,input,[data-action]")){
+    nextSlide();showControls();
+  }
+  if(ev.target.closest(".sidebar a"))document.body.classList.remove("drawer-open");
+});
 
 document.addEventListener("keydown",function(ev){
   const modal=$("#searchModal");
-  /* Pesquisa aberta */
   if(modal.classList.contains("is-open")){
     if(ev.key==="Escape"){ev.preventDefault();closeSearch();return;}
     if(ev.key==="ArrowDown"||ev.key==="ArrowUp"){
@@ -2611,10 +2774,7 @@ document.addEventListener("keydown",function(ev){
       items[state.searchActive].scrollIntoView({block:"nearest"});
       return;
     }
-    if(ev.key==="Enter"){
-      if(state.searchActive>=0){ev.preventDefault();goSearchResult(state.searchActive);}
-      return;
-    }
+    if(ev.key==="Enter"){if(state.searchActive>=0){ev.preventDefault();goSearchResult(state.searchActive);}return;}
     if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==="k"){ev.preventDefault();$("#searchInput").focus();$("#searchInput").select();}
     return;
   }
@@ -2622,15 +2782,13 @@ document.addEventListener("keydown",function(ev){
   const k=ev.key;
   const lk=k.length===1?k.toLowerCase():k;
 
-  /* Índice de slides */
   if(state.presActive&&$("#presIndex").classList.contains("is-open")){
     if(k==="Escape"||lk==="g"){ev.preventDefault();toggleIndex();}
     return;
   }
-  /* Modo apresentação */
   if(state.presActive){
-    const handled=["ArrowRight","ArrowDown","ArrowLeft","ArrowUp"," ","Spacebar","Home","End","Escape"];
-    if(handled.indexOf(k)>-1||"flp+-".indexOf(lk)>-1){ev.preventDefault();}
+    const handled=["ArrowRight","ArrowDown","ArrowLeft","ArrowUp"," ","Spacebar","Home","End","Escape","PageUp","PageDown"];
+    if(handled.indexOf(k)>-1||"flp+-=bn g".indexOf(lk)>-1)ev.preventDefault();
     switch(k){
       case "ArrowRight":case "ArrowDown":case " ":case "Spacebar":case "PageDown":nextSlide();break;
       case "ArrowLeft":case "ArrowUp":case "PageUp":previousSlide();break;
@@ -2642,6 +2800,8 @@ document.addEventListener("keydown",function(ev){
         else if(lk==="l")toggleLaser();
         else if(lk==="p")exitPresentationMode();
         else if(lk==="g")toggleIndex();
+        else if(lk==="n")toggleNotes();
+        else if(lk==="b")toggleBlackout();
         else if(k==="+"||k==="=")increaseFont();
         else if(k==="-"||k==="_")decreaseFont();
         else if(lk==="t")toggleTheme();
@@ -2649,7 +2809,6 @@ document.addEventListener("keydown",function(ev){
     showControls();
     return;
   }
-  /* Modo normal */
   if(typing)return;
   if((ev.ctrlKey||ev.metaKey)&&lk==="k"){ev.preventDefault();openSearch();return;}
   if(lk==="/"&&!ev.ctrlKey&&!ev.metaKey){ev.preventDefault();openSearch();return;}
@@ -2665,7 +2824,21 @@ document.addEventListener("mousemove",function(e){
   if(state.presActive)showControls();
 },{passive:true});
 document.addEventListener("wheel",function(){if(state.presActive)showControls();},{passive:true});
-document.addEventListener("touchstart",function(){if(state.presActive)showControls();},{passive:true});
+
+/* gestos táteis: deslizar para navegar */
+let touchX=0,touchY=0;
+document.addEventListener("touchstart",function(e){
+  if(!state.presActive)return;
+  touchX=e.changedTouches[0].clientX;touchY=e.changedTouches[0].clientY;
+  showControls();
+},{passive:true});
+document.addEventListener("touchend",function(e){
+  if(!state.presActive)return;
+  const dx=e.changedTouches[0].clientX-touchX,dy=e.changedTouches[0].clientY-touchY;
+  if(Math.abs(dx)>64&&Math.abs(dx)>Math.abs(dy)*1.4){dx<0?nextSlide():previousSlide();}
+  showControls();
+},{passive:true});
+
 window.addEventListener("resize",function(){fitSlide();});
 document.addEventListener("fullscreenchange",onFullscreenChange);
 document.addEventListener("webkitfullscreenchange",onFullscreenChange);
@@ -2686,13 +2859,19 @@ function initApp(){
   loadPreferences();
   applyTheme();
   applyFontScale();
+  applySideCollapsed();
   buildSearchIndex();
   const ap=$("#prefAutoPresent");if(ap)ap.checked=!!state.autoPresent;
   if(state.laser)document.body.classList.add("laser-on");
   router();
   renderSidebar();
   updateProgress();
-  fitSlide();
+  if("ResizeObserver" in window){
+    new ResizeObserver(function(){fitSlide();}).observe($("#slideFrame"));
+  }
+  if(document.fonts&&document.fonts.ready){
+    document.fonts.ready.then(function(){fitSlide();});
+  }
   if(state.autoPresent&&!state.presActive){
     setTimeout(function(){enterPresentationMode();},350);
   }
